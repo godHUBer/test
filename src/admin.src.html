@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Showroom Admin — Sohan Automobile</title>
+<meta name="description" content="Dealership staff control panel. Not for public use.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="admin.html">
+<meta property="og:title" content="Showroom Admin — Sohan Automobile">
+<meta property="og:description" content="Dealership staff control panel. Not for public use.">
+<meta name="theme-color" content="#070B09">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+{{STYLES}}
+<style>
+/* --- admin panel (scoped; the public design system above stays untouched) --- */
+.adm-shell { padding-bottom: clamp(48px, 6vw, 90px); }
+.adm-card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: clamp(20px, 3vw, 34px); }
+.adm-login { max-width: 460px; margin: clamp(30px, 5vw, 70px) auto 0; }
+.adm-form { display: grid; gap: 14px; margin-top: 18px; }
+.adm-status { min-height: 1.2em; font-size: .88rem; }
+.adm-status.is-err { color: #ff9d8f; }
+.adm-status.is-ok { color: var(--accent); }
+.adm-top { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; margin: clamp(24px, 4vw, 44px) 0 18px; }
+.adm-who { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.adm-role { font: 600 .7rem/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--void); background: var(--accent); border-radius: 99px; padding: 5px 10px; }
+.adm-role--pending { background: #e0b64a; }
+.adm-tabs { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+.adm-tab { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--ink-2); font: 500 .92rem/1 var(--sans); letter-spacing: .02em; padding: 12px 14px; cursor: pointer; }
+.adm-tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.adm-tab:hover { color: var(--ink); }
+.adm-panel[hidden] { display: none; }
+.adm-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin: 0; }
+.adm-counts > div { background: var(--surface); padding: 16px; }
+.adm-counts dt { font: 500 .68rem/1.2 var(--sans); letter-spacing: .13em; text-transform: uppercase; color: var(--stone); margin-bottom: 6px; }
+.adm-counts dd { margin: 0; font-family: var(--serif); font-size: 1.7rem; color: var(--ink); }
+.adm-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.adm-table th { text-align: left; font: 500 .66rem/1.2 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--stone); padding: 10px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.adm-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; color: var(--ink-2); }
+.adm-table td.tnum, .adm-table input.tnum { font-variant-numeric: tabular-nums; }
+.adm-table input, .adm-table select { background: var(--surface-2); border: 1px solid var(--line); border-radius: 3px; color: var(--ink); font: inherit; padding: 7px 8px; width: 110px; }
+.adm-table input.w-name { width: 190px; }
+.adm-table select.w-status { width: 118px; }
+.adm-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.adm-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+.adm-chip { font: 500 .78rem/1 var(--sans); letter-spacing: .04em; background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); border-radius: 99px; padding: 8px 13px; cursor: pointer; }
+.adm-chip[aria-pressed="true"] { background: var(--brand); color: var(--void); border-color: var(--brand); }
+.adm-formgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 16px; }
+.adm-formgrid .field { margin: 0; }
+.adm-full { grid-column: 1 / -1; }
+.adm-logcode { font-size: .74rem; color: var(--stone); word-break: break-all; }
+.adm-note { font-size: .84rem; color: var(--stone); max-width: 68ch; }
+.adm-filehint { font-size: .8rem; color: var(--stone); }
+@media (max-width: 760px) { .adm-table { display: block; overflow-x: auto; } }
+</style>
+</head>
+<body data-page="admin">
+{{NAV}}
+
+<main id="main">
+<section class="adm-shell band--sm">
+  <div class="wrap">
+
+    <!-- ================================================== LOGIN ===== -->
+    <div class="adm-card adm-login" id="adm-login" hidden>
+      <p class="kicker">Restricted</p>
+      <h1 style="font-size:var(--s3)">Showroom control panel</h1>
+      <p class="adm-note" style="margin-top:10px">Staff only. Every sign-in, every change and every failed attempt
+        is written to an append-only log that this panel can read but never alter.</p>
+      <form class="adm-form" id="adm-login-form" novalidate>
+        <div class="field"><label for="l-email">Email</label>
+          <input id="l-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="l-pass">Password</label>
+          <input id="l-pass" name="password" type="password" autocomplete="current-password" required minlength="6"></div>
+        <div class="adm-actions">
+          <button class="btn btn--solid" type="submit" id="l-in">Sign in</button>
+          <button class="btn btn--line" type="button" id="l-mode">First time? Create the owner account</button>
+        </div>
+        <p class="adm-status" id="l-status" role="status"></p>
+      </form>
+    </div>
+
+    <!-- ==================================================== APP ===== -->
+    <div id="adm-app" hidden>
+      <div class="adm-top">
+        <div>
+          <p class="kicker">Sohan Automobile · control panel</p>
+          <h1 style="font-size:var(--s3);margin:0">Floor &amp; records</h1>
+        </div>
+        <div class="adm-who">
+          <span id="adm-email" style="color:var(--ink-2);font-size:.9rem"></span>
+          <span class="adm-role" id="adm-role">—</span>
+          <button class="btn btn--line btn--sm" id="adm-out" type="button">Sign out</button>
+        </div>
+      </div>
+
+      <div class="adm-tabs" role="tablist" aria-label="Admin sections">
+        <button class="adm-tab" role="tab" id="tab-overview" aria-controls="p-overview" aria-selected="true">Overview</button>
+        <button class="adm-tab" role="tab" id="tab-cars" aria-controls="p-cars" aria-selected="false">Cars</button>
+        <button class="adm-tab" role="tab" id="tab-add" aria-controls="p-add" aria-selected="false">Add car</button>
+        <button class="adm-tab" role="tab" id="tab-showroom" aria-controls="p-showroom" aria-selected="false">Showroom info</button>
+        <button class="adm-tab" role="tab" id="tab-activity" aria-controls="p-activity" aria-selected="false">Activity log</button>
+        <button class="adm-tab" role="tab" id="tab-account" aria-controls="p-account" aria-selected="false">Account</button>
+      </div>
+
+      <!-- overview -->
+      <div class="adm-panel" id="p-overview" role="tabpanel" aria-labelledby="tab-overview">
+        <dl class="adm-counts" id="ov-counts"></dl>
+        <div class="adm-card" style="margin-top:18px">
+          <div class="adm-toolbar"><h2 style="font-size:var(--s4);margin:0">Latest log entries</h2>
+            <button class="btn btn--line btn--sm" id="ov-refresh" type="button">Refresh</button></div>
+          <div style="overflow-x:auto"><table class="adm-table"><tbody id="ov-log"></tbody></table></div>
+        </div>
+        <p class="adm-note" style="margin-top:14px">Cars shown here come straight from the database — including sold and
+          hidden ones the public site never lists. The public pages reconcile themselves against this data on every visit.</p>
+      </div>
+
+      <!-- cars -->
+      <div class="adm-panel" id="p-cars" role="tabpanel" aria-labelledby="tab-cars" hidden>
+        <div class="adm-toolbar" role="group" aria-label="Filter by status" id="cars-chips">
+          <button class="adm-chip" type="button" data-st="all" aria-pressed="true">All</button>
+          <button class="adm-chip" type="button" data-st="available" aria-pressed="false">Available</button>
+          <button class="adm-chip" type="button" data-st="reserved" aria-pressed="false">Reserved</button>
+          <button class="adm-chip" type="button" data-st="sold" aria-pressed="false">Sold</button>
+          <button class="adm-chip" type="button" data-st="hidden" aria-pressed="false">Hidden</button>
+          <button class="btn btn--line btn--sm" id="cars-refresh" type="button" style="margin-left:auto">Refresh</button>
+        </div>
+        <p class="adm-status" id="cars-status" role="status"></p>
+        <div style="overflow-x:auto"><table class="adm-table">
+          <thead><tr><th>Car</th><th>Year</th><th>Price ₹L</th><th>Km</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
+          <tbody id="cars-tbody"></tbody>
+        </table></div>
+        <p class="adm-note" style="margin-top:12px">Sold cars keep their public page with a “sold” notice until you
+          delete the row here — deleting is permanent and logged. Hidden cars vanish from everywhere until restored.</p>
+      </div>
+
+      <!-- add car -->
+      <div class="adm-panel" id="p-add" role="tabpanel" aria-labelledby="tab-add" hidden>
+        <div class="adm-card">
+          <h2 style="font-size:var(--s4);margin:0">Add a car to the floor</h2>
+          <p class="adm-note" style="margin-top:8px">The car appears on the public site immediately — the grids pick it up
+            live, with a “photograph pending” block until photos are uploaded here. Its own detail page is generated at the
+            next site rebuild.</p>
+          <form class="adm-formgrid" id="add-form" novalidate>
+            <div class="field"><label for="a-id">Reference (slug)</label><input id="a-id" type="text" required pattern="[a-z0-9-]+"><p class="adm-filehint">lowercase letters, digits, hyphens — e.g. swift-2019</p></div>
+            <div class="field"><label for="a-year">Year</label><input id="a-year" class="tnum" type="number" min="1980" max="2100" required></div>
+            <div class="field"><label for="a-make">Make</label><input id="a-make" type="text" required></div>
+            <div class="field"><label for="a-model">Model</label><input id="a-model" type="text" required></div>
+            <div class="field"><label for="a-variant">Variant</label><input id="a-variant" type="text" required></div>
+            <div class="field"><label for="a-km">Odometer (km)</label><input id="a-km" class="tnum" type="number" min="0" required></div>
+            <div class="field"><label for="a-fuel">Fuel</label><select id="a-fuel"><option>Petrol</option><option>Diesel</option><option>CNG</option><option>Electric</option><option>Hybrid</option></select></div>
+            <div class="field"><label for="a-trans">Gearbox (leave blank if unstated)</label><select id="a-trans"><option value="">Not stated</option><option>Manual</option><option>Manual (iMT)</option><option>Automatic (AMT)</option><option>Automatic (Torque converter)</option><option>Automatic (CVT)</option><option>Automatic (DCT)</option></select></div>
+            <div class="field"><label for="a-body">Body</label><select id="a-body"><option>Hatchback</option><option>Sedan</option><option>SUV</option><option>MUV</option></select></div>
+            <div class="field"><label for="a-price">Asking price (₹ lakh)</label><input id="a-price" class="tnum" type="number" min="0.1" step="0.01" required></div>
+            <div class="field"><label for="a-note">Price note (optional)</label><input id="a-note" type="text"></div>
+            <div class="field"><label for="a-reg">Registration</label><input id="a-reg" type="text" value="Kolkata (WB)" required></div>
+            <div class="field adm-full"><label for="a-high">Highlights (comma-separated)</label><input id="a-high" type="text" placeholder="Great Price, Free home test drive"></div>
+            <div class="field adm-full"><label for="a-over">Overview</label><textarea id="a-over" rows="3"></textarea></div>
+            <div class="field"><label for="a-photo">Main photograph (JPG)</label><input id="a-photo" type="file" accept="image/jpeg"><p class="adm-filehint">a 480px-wide copy is generated automatically</p></div>
+            <div class="field"><label for="a-gallery">Gallery photographs (JPG, in order)</label><input id="a-gallery" type="file" accept="image/jpeg" multiple></div>
+            <div class="field adm-full"><label style="display:flex;gap:8px;align-items:center"><input id="a-featured" type="checkbox" style="width:auto"> Feature as “Newest on the floor”</label></div>
+            <div class="adm-full adm-actions"><button class="btn btn--solid" type="submit">Add the car</button></div>
+            <p class="adm-status adm-full" id="add-status" role="status"></p>
+          </form>
+        </div>
+      </div>
+
+      <!-- showroom info -->
+      <div class="adm-panel" id="p-showroom" role="tabpanel" aria-labelledby="tab-showroom" hidden>
+        <div class="adm-card">
+          <h2 style="font-size:var(--s4);margin:0">Showroom information &amp; services</h2>
+          <p class="adm-note" style="margin-top:8px">These fields feed the contact grid, the nav sheet and the services
+            overview on the public site. Filling “Hours” retires the opening-hours placeholder everywhere.</p>
+          <form class="adm-formgrid" id="brand-form" novalidate>
+            <div class="field"><label for="b-name">Dealership name</label><input id="b-name" type="text"></div>
+            <div class="field"><label for="b-tag">Tagline</label><input id="b-tag" type="text"></div>
+            <div class="field"><label for="b-phone">Phone (display)</label><input id="b-phone" type="text"></div>
+            <div class="field"><label for="b-phref">Phone (href, e.g. +9198…)</label><input id="b-phref" type="text"></div>
+            <div class="field"><label for="b-email">Email</label><input id="b-email" type="email"></div>
+            <div class="field"><label for="b-addr">Address (street)</label><input id="b-addr" type="text"></div>
+            <div class="field"><label for="b-city">Address (city line)</label><input id="b-city" type="text"></div>
+            <div class="field"><label for="b-area">Area descriptor</label><input id="b-area" type="text"></div>
+            <div class="field"><label for="b-map">Google Maps URL</label><input id="b-map" type="url"></div>
+            <div class="field"><label for="b-hours">Opening hours</label><input id="b-hours" type="text" placeholder="e.g. Mon–Sat 10 am – 8 pm"></div>
+            <div class="field adm-full"><label for="b-services">Services (one per line)</label><textarea id="b-services" rows="6"></textarea></div>
+            <div class="adm-full adm-actions"><button class="btn btn--solid" type="submit">Save showroom info</button></div>
+            <p class="adm-status adm-full" id="brand-status" role="status"></p>
+          </form>
+        </div>
+      </div>
+
+      <!-- activity -->
+      <div class="adm-panel" id="p-activity" role="tabpanel" aria-labelledby="tab-activity" hidden>
+        <div class="adm-toolbar">
+          <label class="adm-note" for="log-filter" style="margin:0">Show</label>
+          <select id="log-filter" style="background:var(--surface-2);border:1px solid var(--line);color:var(--ink);border-radius:3px;padding:8px">
+            <option value="">Everything (last 100)</option>
+            <option value="auth.">Sign-ins</option>
+            <option value="car.">Car changes</option>
+            <option value="brand.">Showroom info</option>
+            <option value="admin.">Admin changes</option>
+          </select>
+          <button class="btn btn--line btn--sm" id="log-refresh" type="button">Refresh</button>
+        </div>
+        <p class="adm-status" id="log-status" role="status"></p>
+        <div style="overflow-x:auto"><table class="adm-table">
+          <thead><tr><th>When</th><th>Action</th><th>Actor</th><th>About</th><th>What changed</th></tr></thead>
+          <tbody id="log-tbody"></tbody>
+        </table></div>
+        <p class="adm-note" style="margin-top:12px">This log is append-only — it can be read here, never edited or
+          erased, not even by an admin session.</p>
+      </div>
+
+      <!-- account -->
+      <div class="adm-panel" id="p-account" role="tabpanel" aria-labelledby="tab-account" hidden>
+        <div class="adm-card" style="max-width:520px">
+          <h2 style="font-size:var(--s4);margin:0">Account</h2>
+          <p style="color:var(--ink-2)">Signed in as <b id="acc-email">—</b> · role <b id="acc-role">—</b></p>
+          <form class="adm-form" id="pw-form" novalidate>
+            <div class="field"><label for="p-new">New password</label><input id="p-new" type="password" minlength="6" required autocomplete="new-password"></div>
+            <div class="adm-actions"><button class="btn btn--solid" type="submit">Change password</button></div>
+            <p class="adm-status" id="pw-status" role="status"></p>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+</main>
+
+{{FOOTER}}
+{{DATA}}
+{{SCRIPT}}
+{{ADMIN}}
+</body>
+</html>

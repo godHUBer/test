@@ -42,6 +42,7 @@ PAGES = {
     "showroom.src.html": "showroom.html",
     "contact.src.html": "contact.html",
     "legal.src.html": "legal.html",
+    "admin.src.html": "admin.html",
 }
 DETAIL_TEMPLATE = "vehicle.src.html"
 DETAIL_OUT = "car-{id}.html"
@@ -51,6 +52,7 @@ BRAND, CARS = DATA["brand"], DATA["cars"]
 CSS = (ASSETS / "css/styles.css").read_text(encoding="utf-8").strip()
 JS = (ASSETS / "js/site.js").read_text(encoding="utf-8").strip()
 DATAJS = (ASSETS / "js/data.js").read_text(encoding="utf-8").strip()
+ADMINJS = (ASSETS / "js/admin.js").read_text(encoding="utf-8").strip()
 
 def check_btn_variants() -> None:
     """A renamed class leaves its rules behind in the stylesheet, and the stale ones are
@@ -635,6 +637,7 @@ def render(src_name: str, out_name: str, ctx: dict, destdir: Path) -> str:
     body = body.replace("{{STYLES}}", f"<style>\n{CSS}\n</style>")
     body = body.replace("{{SCRIPT}}", f"<script>\n{JS}\n</script>")
     body = body.replace("{{DATA}}", f"<script>\n{DATAJS}\n</script>")
+    body = body.replace("{{ADMIN}}", f"<script>\n{ADMINJS}\n</script>")
     body, _ = inject(body, ctx, src_name)
     # the inlined stylesheet legitimately holds SVG data URIs, so check only the markup
     head = body.split("<style>")[0].split("</head>")[0]

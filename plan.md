@@ -373,3 +373,26 @@ Re-seeding later is safe by construction: existing rows are never overwritten, s
 **Additive changes:** `build.py` (Python 3.11 f-string compat fix via `frame_attrs()` helper — the build now runs on 3.11.2; `{{DATA}}` token inlining `data.js`; `data-car-id` on cards/hero/options; nav-sheet count span), `site.js` (`apply()` re-reads the grid so counts/filters follow live-layer removals and appends), templates (8 × `{{DATA}}`; `[data-count-published]` spans around every published-count; `data-featured-slot`, `data-home-grid`; vehicle `<body data-car-id>`).
 
 **Acceptance:** `node --check` clean on both scripts · `build.py` + `build.py --check` pass on 3.11 (22 pages) · every page carries the markers and inlines `data.js` · zero leftover `{{…}}` tokens · preview serving on :8000 with the live layer fetching the seeded 15.
+
+### Phase 4 — Admin panel · **complete** (24 Nov 2026)
+
+**New surface:** `admin.html` (built by `build.py`, `noindex`, not linked from the public nav) + `assets/js/admin.js` (~18 KB, no dependencies). Login/first-time-signup card → tabbed panel: **Overview** (status counters + latest log), **Cars** (status-filtered table; inline price/km/status/featured edits; delete with confirm), **Add car** (full form, auto-slug, main photo upload with automatic 480 px `-sm` copy via canvas, ordered gallery uploads, photo paths written to the row), **Showroom info** (services one-per-line, hours, phone/email/address/map — the honest-gap placeholders retire once filled), **Activity log** (filter by action prefix, diffs shown), **Account** (role display, password change). Session tokens + refresh token in `localStorage` under one key; REST wrapper refreshes once on 401; every mutation rides the admin JWT through RLS. All dynamic markup escaped.
+
+**Live verification cycle** (run as atomic DO blocks emulating the exact panel request context — JWT claims + forwarded IP/user-agent — because the sandbox's outbound allow-list blocks direct calls to `supabase.co`; every policy, trigger and identity path below is the same one PostgREST exercises):
+
+| Step | Result |
+| --- | --- |
+| temp account created in `auth.users` → signup trigger | ✅ `admin_profiles` row auto-created as `pending` (log: `admin.enrolled`) |
+| promote to owner (single statement) | ✅ logged `admin.updated` with diff `role: pending → owner`; `is_admin()`/`is_owner()` true in that JWT context |
+| admin PATCH price (JWT + `x-forwarded-for` + UA) | ✅ price applied; log `car.update` with **actor_email, ip, user-agent** and diff `price_lakh: 6 → 5.75` |
+| admin INSERT test car | ✅ logged `car.create` with identity |
+| storage: admin INSERT object | ✅ admin-write policy passes; anon read ✅; anon INSERT ✅ denied `42501` |
+| mark sold | ✅ log `car.status` diff `available → sold`; anon still sees the sold row (sold-notice path) |
+| delete car | ✅ log `car.delete` with identity; grid removes it on next public visit |
+| `record_auth_event` | ✅ `auth.login` (actor + IP) via authenticated RPC; `auth.login_failed` (attempted email + IP + UA) via anon RPC |
+| delete temp auth user → cascade | ✅ profile gone, log `admin.removed` — full lifecycle: enrolled → updated → removed |
+| final state | ✅ 15 cars, Creta restored to 6.00, 0 temp profiles, log = honest setup history |
+
+**Findings during verification (both worked as designed, once understood):** (1) the connector's batched SQL ran inside one implicit transaction — my explicit `begin/rollback` batches rolled back the whole batch; single statements and DO blocks persist atomically, which is how the panel's server-side counterpart behaves anyway. (2) Supabase guards `storage.objects` against direct SQL DELETE — the panel deletes photos through the Storage API endpoint, which is the permitted path. One synthetic storage metadata row remains (76 bytes, references no real file); removable via dashboard Storage → car-photos.
+
+**Onboarding (IMPORTANT):** public signup stays **enabled** until the owner registers their account at `admin.html` ("First time? Create the owner account"). New accounts get the zero-privilege `pending` role — they can see nothing sensitive — so the window is safe. Once the owner tells us their account exists, it is promoted to `owner` and signup is disabled (`disable_signup: true` via `update_auth_config`).
