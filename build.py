@@ -152,7 +152,31 @@ def dims(path: Path) -> tuple[int, int]:
 def stock_path(car) -> Path:
     return ASSETS / "img" / "stock" / f"{car['id']}.jpg"
 
+SUPABASE_REF = "vxlxoiycolfojcnhnzfr"
+STORAGE_BASE = f"https://{SUPABASE_REF}.supabase.co/storage/v1/object/public/car-photos/"
+
+def stock_src(car) -> str:
+    """Cars added through the admin panel keep their photographs in Storage;
+    seeded cars use the local files. Both must render identically."""
+    if car.get("photoStock"):
+        return STORAGE_BASE + car["photoStock"]
+    return f"assets/img/stock/{car['id']}.jpg"
+
+def stock_sm_src(car) -> str:
+    if car.get("photoStock"):
+        return STORAGE_BASE + car["photoStock"].rsplit(".jpg", 1)[0] + "-sm.jpg"
+    return f"assets/img/stock/{car['id']}-sm.jpg"
+
+def stock_dims(car) -> tuple[int, int]:
+    return (900, 675) if car.get("photoStock") else dims(stock_path(car))
+
+def hours_text() -> str:
+    """The admin-editable opening hours, or the honest-gap placeholder until they exist."""
+    return e(BRAND["hours"]) if BRAND.get("hours") else PLACEHOLDERS["hours"]
+
 def gallery_paths(car) -> list[str]:
+    if car.get("photosGallery"):
+        return [STORAGE_BASE + p for p in car["photosGallery"]]
     out = [f"assets/img/gallery/{car['id']}-{n}.jpg"
            for n in (1, 2) if (ASSETS / "img" / "gallery" / f"{car['id']}-{n}.jpg").exists()]
     return out or [f"assets/img/stock/{car['id']}.jpg"]
@@ -262,7 +286,7 @@ def render_footer() -> str:
           <li class="contact-line"><b><a href="mailto:{e(BRAND["email"])}">{e(BRAND["email"])}</a></b></li>
           <li class="contact-line"><b><a href="{e(BRAND["mapUrl"])}" target="_blank" rel="noopener">{e(BRAND["addressShort"])}</a></b>
             <span>{e(BRAND["addressCity"])}</span></li>
-          <li class="contact-line"><b>{e(PLACEHOLDERS["hours"])}</b></li>
+          <li class="contact-line"><b>{hours_text()}</b></li>
         </ul>
       </div>
     </div>
@@ -280,9 +304,9 @@ def render_footer() -> str:
 # ------------------------------------------------------------------- blocks
 
 def render_card(car, idx=0, eager=False) -> str:
-    p = f"assets/img/stock/{car['id']}.jpg"
-    sm = f"assets/img/stock/{car['id']}-sm.jpg"
-    w, h = dims(stock_path(car))
+    p = stock_src(car)
+    sm = stock_sm_src(car)
+    w, h = stock_dims(car)
     flag = ""
     if "Less driven" in car.get("highlights", []):
         flag = '<span class="veh__flag veh__flag--bright">Less driven</span>'
@@ -319,9 +343,9 @@ def render_card(car, idx=0, eager=False) -> str:
 </article>"""
 
 def render_featured(car) -> str:
-    p = f"assets/img/stock/{car['id']}.jpg"
-    sm = f"assets/img/stock/{car['id']}-sm.jpg"
-    w, h = dims(stock_path(car))
+    p = stock_src(car)
+    sm = stock_sm_src(car)
+    w, h = stock_dims(car)
     rows = [
         ("Year of manufacture", f'<span class="tnum">{car["year"]}</span>'),
         ("Variant", e(car["variant"])),
@@ -427,7 +451,7 @@ def render_filters() -> str:
 def render_shots(cars) -> str:
     return "\n    ".join(
         f'''<figure class="shot{" shot--wide" if i == 0 else ""}">
-      <img src="assets/img/stock/{c["id"]}.jpg" alt="{e(name(c, True))} on the forecourt at {e(BRAND["area"])}"
+      <img src="{stock_src(c)}" alt="{e(name(c, True))} on the forecourt at {e(BRAND["area"])}"
            width="900" height="675" loading="lazy" decoding="async">
       <figcaption>{e(name(c, True))} · <span class="tnum">{km(c["km"])}</span> · {price(c["priceLakh"])}</figcaption>
     </figure>''' for i, c in enumerate(cars))
@@ -440,8 +464,8 @@ def render_contact_grid() -> str:
     <small>Replies on working days; send photographs when selling.</small></dd></div>
   <div><dt>Showroom</dt><dd><a href="{e(BRAND["mapUrl"])}" target="_blank" rel="noopener">{e(BRAND["addressShort"])}</a>
     <small>{e(BRAND["addressCity"])} · also listed as {e(BRAND["area"])}</small></dd></div>
-  <div><dt>Hours</dt><dd>{e(PLACEHOLDERS["hours"])}
-    <small>Add the confirmed times to this site — the dealership has not published them.</small></dd></div>
+  <div><dt>Hours</dt><dd>{hours_text()}
+    <small>{"Times confirmed by the dealership — call ahead to double-check holiday hours." if BRAND.get("hours") else "Add the confirmed times to this site — the dealership has not published them."}</small></dd></div>
   <div><dt>Services</dt><dd>{e(" · ".join(BRAND["services"]))}
     <small>As listed on the dealership's own About page.</small></dd></div>
   <div><dt>Established</dt><dd>{e(BRAND["established"])}
@@ -477,7 +501,7 @@ def car_tokens(car) -> dict:
     filled = sum(1 for x in known if x)
     shots = render_shots(sim[:4])
     gal = gallery_paths(car)
-    w, h = dims(stock_path(car))
+    w, h = stock_dims(car)
     def frame_attrs(i: int) -> str:
         # a helper keeps backslashes out of the f-string expression (Python 3.11 compatible)
         return 'loading="eager" fetchpriority="high"' if i == 0 else 'loading="lazy"'
@@ -569,7 +593,8 @@ def special_tokens(html: str, ctx: dict) -> str:
         label, _sep, note = inner.partition("|")
         return placeholder(label.strip(), note.strip() or "Not published by the dealership", dark=dark)
     html = re.sub(r"\{\{PLACEHOLDER:([^}]+)\}\}", ph, html)
-    html = re.sub(r"\{\{PH:([a-z]+)\}\}", lambda m: e(PLACEHOLDERS[m.group(1)]), html)
+    html = re.sub(r"\{\{PH:([a-z]+)\}\}",
+                  lambda m: hours_text() if m.group(1) == "hours" else e(PLACEHOLDERS[m.group(1)]), html)
 
     def cards(m):
         which = m.group(1)
@@ -622,7 +647,10 @@ def special_tokens(html: str, ctx: dict) -> str:
 def hero_image() -> str:
     img = ASSETS / "img" / "hero-vehicle.jpg"
     w, h = dims(img)
-    lead = CARS[4]
+    # the hero photograph is a local file — the labelled car must be one that has it
+    local = [c for c in CARS if not c.get("photoStock")]
+    lead = (CARS[4] if len(CARS) > 4 and not CARS[4].get("photoStock")
+            else (local[0] if local else CARS[0]))
     return (f'<img src="assets/img/hero-vehicle.jpg" width="{w}" height="{h}" '
             f'alt="{e(name(lead))} {e(lead["variant"])}, photographed on the dealership forecourt" '
             f'fetchpriority="high" decoding="async">')
@@ -705,8 +733,9 @@ def main() -> None:
     destdir = Path("/tmp/sohan-build") if check else ROOT
     destdir.mkdir(parents=True, exist_ok=True)
     # missing image guard — the build should fail loudly, not ship a broken <img>
+    # (cars with photoStock render from Storage, so they need no local file)
     for car in CARS:
-        if not stock_path(car).exists():
+        if not stock_path(car).exists() and not car.get("photoStock"):
             raise SystemExit(f"missing stock photograph for {car['id']}: {stock_path(car)}")
     made = build(destdir)
     total = sum(n for _n, n in made) / 1024

@@ -12,15 +12,21 @@ Every page is a single self-contained HTML file (CSS and JS inlined) that works 
 ```
 build.py                    the generator — run this, never edit the .html outputs
 src/*.src.html              page templates (the only place to edit copy)
+src/admin.src.html          the admin panel template (staff control room, noindex)
 assets/css/styles.css       the whole design system, inlined at build time
 assets/js/site.js           progressive enhancement, inlined at build time (motion helpers at the end)
-assets/data/inventory.json  the ONLY place car and company data is written
+assets/js/data.js           live data layer — reconciles the page against Supabase on every visit
+assets/js/admin.js          admin panel client (Supabase auth/REST/storage, no dependencies)
+assets/data/inventory.json  the build-time mirror of the dealership's data; scripts/sync_db.py refreshes it
 assets/img/logo.png         the dealership's own lockup, trimmed — the white artwork, for dark
 assets/img/favicon*.png     square tiles cut from the logo's own "S", plus apple-touch-icon
 assets/img/stock/           dealer listing photographs, 900×675 + 480×360 srcset
 assets/img/gallery/         1400×1050 views used by the vehicle pages and lightbox
 assets/img/hero-vehicle.jpg hero photograph (1680×940)
 assets/fonts/               self-hosted woff2 subsets — no Google Fonts link
+supabase/migrations/        local mirror of the applied database migrations
+scripts/seed_supabase.py    inventory.json → idempotent database seed
+scripts/sync_db.py          database → inventory.json (no secrets needed; see below)
 ```
 
 ## Build
@@ -49,24 +55,29 @@ painted with a light background, which on a dark site means a rule survived a re
 Both live outside the site folder on purpose: they are checks, not deliverables.
 
 Output: `index.html`, `inventory.html`, `sell-your-car.html`, `about.html`,
-`showroom.html`, `contact.html`, `legal.html`, and one `car-<id>.html` per entry in
-`inventory.json` (22 pages today).
+`showroom.html`, `contact.html`, `legal.html`, `admin.html` (the staff panel), and one
+`car-<id>.html` per entry in `inventory.json` (23+ pages today).
 
 ## Editing
 
 | Want to change | Edit |
 | --- | --- |
 | Copy, section order, new sections | `src/<page>.src.html` |
-| A car: price, odometer, highlights, new arrival, sold car | `assets/data/inventory.json` |
-| Phone, email, address, services | `assets/data/inventory.json` → `brand` |
+| A car: price, odometer, highlights, status (sold/reserved), new car | the **admin panel** (`admin.html`) — or `assets/data/inventory.json` for a build-time batch, then rebuild |
+| Phone, email, address, services, opening hours | the admin panel's *Showroom info* tab — or `assets/data/inventory.json` → `brand` |
 | Colours, type scale, any component | `assets/css/styles.css` |
 | Cards, filters, galleries, contact grid | `build.py` (the `render_*` functions) |
-| Behaviour | `assets/js/site.js` |
+| Public-page live behaviour | `assets/js/data.js` |
+| Panel behaviour | `assets/js/admin.js` |
 
-Adding a car: put two photographs at `assets/img/stock/<id>.jpg` (+ `-sm` variant) and
-`assets/img/gallery/<id>-1.jpg`, `<id>-2.jpg`, add an entry to `cars` in
-`inventory.json`, rebuild. Cards, filters, counts, deep links and the sitemap-style
-footer links all follow from that one entry. Removing one: delete the entry.
+Adding a car: the everyday route is the admin panel's *Add car* tab — it uploads the
+photographs to Storage and the car appears on the public site immediately (grids pick it
+up live; its detail page exists after the next `python3 scripts/sync_db.py && python3
+build.py`). The build-time route still works: put two photographs at
+`assets/img/stock/<id>.jpg` (+ `-sm` variant) and `assets/img/gallery/<id>-1.jpg`,
+`<id>-2.jpg`, run the sync or add the entry to `inventory.json`, rebuild. Removing one:
+mark it sold in the panel (its page turns into an honest notice), then delete the row or
+hide it — every action is logged.
 
 The large "Newest on the floor" card on the home page is whichever entry carries
 `"featured": true`; if none does, the builder falls back to the newest year with the
@@ -97,6 +108,53 @@ ship as literal `{{BRACES}}` text.
   `CAR_OVERVIEW`, `CAR_TAGS`, `CAR_HIGHLIGHT_NOTE`, `CAR_LISTING_URL`, `CAR_ID`,
   `CAR_SPEC_ROWS`, `CAR_FRAMES`, `CAR_THUMBS`, `CAR_FRAMES_COUNT`, `CAR_GALLERY_COUNT`,
   `CAR_LIGHTBOX`, `CAR_COMPLETE`, `CAR_SIMILAR`, `CAR_JSONLD`)
+
+## Supabase, live data & the admin panel
+
+The site is still fully static and self-contained — but the dealership's data now lives
+in a Supabase project (ref `vxlxoiycolfojcnhnzfr`, region `ap-south-1`), and three pieces
+connect it to the pages:
+
+1. **The build-time mirror.** `assets/data/inventory.json` is what `build.py` renders.
+   It is refreshed from the database with `python3 scripts/sync_db.py` (then `python3
+   build.py`). The script uses the same public REST endpoint the site uses, so it needs
+   no secrets: it sees exactly what the public sees — `available`, `reserved` and `sold`
+   cars. A `hidden` car leaves the JSON at the next sync and its built page disappears at
+   the next rebuild; that is what "hidden" means.
+2. **The live layer.** `assets/js/data.js` runs on every page, fetches the published
+   inventory from PostgREST with the publishable key (2.5 s timeout) and reconciles the
+   difference: prices and odometers are refreshed, reserved cars are badged, sold cars
+   leave the grids while their detail pages turn into an honest "This car has been sold"
+   notice, cars added through the panel appear (with a "photograph pending" block until
+   photos are uploaded), and every "N cars published" figure is corrected. If Supabase
+   cannot be reached, nothing happens — the static page stands exactly as built.
+3. **The admin panel.** `admin.html` (built like every page, `noindex`, not linked from
+   the public nav) signs staff in with Supabase Auth and manages the floor: edit price,
+   odometer, status and the featured flag; add cars with photograph uploads (a 480 px
+   `-sm` copy is generated in-browser); mark cars sold, reserved or hidden; delete
+   permanently; edit showroom info and the services list; and read the activity log.
+
+**Security shape.** Every table has row-level security: the publishable key (safe to
+ship inside the HTML — it is public by design) can only read listed cars and the brand
+row; only authenticated accounts with an `owner` or `editor` row in `admin_profiles` can
+write; public signup is disabled after onboarding, and a fresh signup lands as
+`pending` — zero privileges. The `activity_log` is append-only: audit triggers (who,
+what, when, IP, user-agent, field-level before→after) write it through a definer-owned
+function, and no client — admin included — can alter or erase it. Failed sign-in
+attempts are logged too, flood-limited to 20 per IP per 15 minutes.
+
+**Onboarding the owner (done once):** with signup temporarily enabled, open
+`admin.html`, choose "First time? Create the owner account" and register. The account
+starts `pending`; the operator promotes it to `owner` from the database, then
+`disable_signup` is switched on for good. Photographs for panel-added cars live in the
+public-read `car-photos` Storage bucket; deleting objects goes through the Storage API,
+never direct SQL.
+
+**Database changes** are applied as migrations through the Supabase tooling; the applied
+SQL is mirrored under `supabase/migrations/` (files are named with the applied version
+and are *not* re-runnable by hand against the live project). The seed
+(`scripts/seed_supabase.py`) is idempotent — safe to re-run, never overwrites admin
+edits.
 
 ## Brand artwork and palette
 
