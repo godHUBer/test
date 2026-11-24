@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Sohan Automobile | Pre-Owned Car Dealers, Kolkata</title>
+<meta name="description" content="Call +91 98311 89375, email sovandey74@yahoo.com, or send an enquiry from the website about a specific car, a viewing, or selling your vehicle.">
+<link rel="canonical" href="contact.html">
+<meta property="og:title" content="Contact Sohan Automobile, Kolkata">
+<meta property="og:description" content="Phone, email and one showroom address in Beleghata. Enquiries about any published car, in one form.">
+<meta name="theme-color" content="#070B09">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+{{STYLES}}
+</head>
+<body data-page="contact">
+{{NAV}}
+
+<main id="main">
+
+<header class="pagehead band--surface">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> <span aria-hidden="true">/</span>
+      <span aria-current="page">Contact</span></nav>
+    <div class="head" style="margin-bottom:0">
+      <div>
+        <p class="kicker">Contact</p>
+        <h1 style="max-width:20ch">One number, one inbox,<br>one showroom.</h1>
+      </div>
+      <div class="head__aside">
+        <p class="lede" style="margin:0">Buying, selling, servicing or a document you want to see before you travel —
+          it all arrives at the same desk, so it does not matter which route you use.</p>
+        <p class="small dim" style="margin:0">Fastest is the phone. {{PH:hours}}.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="band--sm" style="padding-top:clamp(26px,3vw,40px)" aria-label="Contact details">
+  <div class="wrap">
+    {{CONTACT_GRID}}
+  </div>
+</section>
+
+<section class="band" id="enquiry" aria-labelledby="enquiry-h">
+  <div class="wrap grid g-7-5">
+    <div>
+      <p class="kicker">Send an enquiry</p>
+      <h2 id="enquiry-h" style="font-size:var(--s3)">Ask about a car,<br>a viewing, or your own.</h2>
+      <p class="lede" style="max-width:56ch">Pick the car if you have one in mind — the message then arrives with the year,
+        odometer and price already written out, so nobody has to ask which Creta you mean.</p>
+
+      <form class="form form--2" data-mailto="{{EMAIL}}" data-subject="Website enquiry — Sohan Automobile" novalidate>
+        <div class="field form__full">
+          <label for="q-about">What is this about?</label>
+          <select id="q-about" name="Reason" required>
+            <option value="">Select</option>
+            <option>Enquiry about a car in stock</option>
+            <option>Book a showroom viewing</option>
+            <option>Home test drive request</option>
+            <option>Sell or exchange my car</option>
+            <option>Workshop service or repair</option>
+            <option>Finance or insurance question</option>
+            <option>Something else</option>
+          </select>
+          <span class="error-msg" role="alert">Choose one so it reaches the right person.</span>
+        </div>
+        <div class="field form__full">
+          <label for="q-car">Which car?</label>
+          <select id="q-car" name="Car">
+            {{CAR_OPTIONS:optional}}
+          </select>
+          <span class="hint">Only the {{PUBLISHED}} cars published on this site are listed. For anything on the floor that
+            is not online, say the model in your message and we will look it up.</span>
+        </div>
+        <div class="field">
+          <label for="q-name">Your name <span class="req" aria-hidden="true">*</span></label>
+          <input id="q-name" name="Name" type="text" required autocomplete="name">
+          <span class="error-msg" role="alert">Please add your name.</span>
+        </div>
+        <div class="field">
+          <label for="q-phone">Phone number <span class="req" aria-hidden="true">*</span></label>
+          <input id="q-phone" name="Phone" type="tel" required inputmode="tel" autocomplete="tel" placeholder="+91 …">
+          <span class="error-msg" role="alert">A number we can reach you on.</span>
+        </div>
+        <div class="field form__full">
+          <label for="q-email">Email</label>
+          <input id="q-email" name="Email" type="email" autocomplete="email">
+          <span class="error-msg" role="alert">That address looks incomplete.</span>
+        </div>
+        <div class="field form__full">
+          <label for="q-msg">Your message <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="q-msg" name="Message" required
+            placeholder="What you want to know, and when you could come to Beleghata."></textarea>
+          <span class="error-msg" role="alert">One line is enough — but we do need it.</span>
+        </div>
+        <div class="form__full" style="display:grid;gap:12px">
+          <button class="btn btn--solid" type="submit">Send Enquiry
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8h13M9.5 3l5 5-5 5"/></svg></button>
+          <p class="hint">This form does not post to a server. It opens your mail app with the message composed, and shows a
+            copy button in case nothing opens — so nothing about you is stored by this website.</p>
+          <div class="form__status" role="status" tabindex="-1"></div>
+        </div>
+      </form>
+    </div>
+
+    <aside class="stack-lg">
+      <div class="notes">
+        <h4>Which route is quickest</h4>
+        <ul>
+          <li><b>Is this car still available?</b> Phone. It is the only answer that is current to the minute.</li>
+          <li><b>Can I see documents first?</b> Email, and ask for the specific papers by name.</li>
+          <li><b>I want a home test drive.</b> Phone, then confirm in writing — the listing flag is not a booking.</li>
+          <li><b>Selling my car.</b> Use the <a href="sell-your-car.html">sell form</a>; photographs move it along faster.</li>
+        </ul>
+      </div>
+      <div class="notes">
+        <h4>What we will not tell you on email</h4>
+        <p style="margin:0">A price for your car without seeing it, and a guarantee about a car we have not driven with you.
+          {{PH:valuation}}. Everything else, ask.</p>
+      </div>
+      <div class="shot-stack">
+        {{SHOTS:eeco-2012,estilo-2011}}
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="band band--surface" aria-labelledby="hours-h">
+  <div class="wrap grid g-6-6" style="align-items:center">
+    <div>
+      <p class="kicker">Hours and access</p>
+      <h2 id="hours-h" style="font-size:var(--s3);max-width:24ch">The one detail this page cannot yet publish.</h2>
+    </div>
+    <div>
+      <p class="lede" style="margin:0 0 16px">The dealership has not published opening hours anywhere we could verify, so
+        instead of inventing a tidy 10-to-8, this page says: call ahead. It is also the difference between a wasted trip
+        and a car waiting with its keys on the counter.</p>
+      <dl class="spec-table tnum">
+        <div><dt>Published hours</dt><dd class="to-confirm">To be confirmed by the dealership</dd></div>
+        <div><dt>Sunday / public holidays</dt><dd class="to-confirm">Not published</dd></div>
+        <div><dt>Workshop cut-off</dt><dd class="to-confirm">Not published</dd></div>
+        <div><dt>Best way to check</dt><dd><a href="tel:{{PHONE_HREF}}">{{PHONE}}</a></dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+</main>
+{{FOOTER}}
+{{SCRIPT}}
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy, Terms and Listing Data | Sohan Automobile</title>
+<meta name="description" content="How this site handles enquiries, the status of its terms, and where every vehicle specification and price came from.">
+<link rel="canonical" href="legal.html">
+<meta name="theme-color" content="#070B09">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+{{STYLES}}
+</head>
+<body data-page="about">
+{{NAV}}
+
+<main id="main">
+
+<header class="pagehead band--surface">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> <span aria-hidden="true">/</span>
+      <span aria-current="page">Privacy and terms</span></nav>
+    <p class="kicker">Plain language</p>
+    <h1 style="max-width:22ch">Privacy, terms, and where<br>this data came from.</h1>
+    <p class="lede" style="margin-top:6px;max-width:52ch">Three things a car website usually buries, written out because
+      they are short.</p>
+  </div>
+</header>
+
+<section class="band" style="padding-top:clamp(28px,3.2vw,44px)" aria-labelledby="privacy-h">
+  <div class="wrap wrap--tight">
+    <h2 id="privacy-h" style="font-size:var(--s3)">Privacy</h2>
+    <p>This site sets no cookies and runs no analytics. Its fonts, photographs and script are served from the same place as
+      the pages, so your browser asks nothing of a third party while you browse — no ad network learns that you looked at a
+      Creta.</p>
+    <p>The enquiry and sale forms do not transmit data to a server. They compose an email on your own device: the fields are
+      written out into a message in your mail app, and nothing leaves the device unless you press send. No account, no
+      storage, no tracking pixel, no newsletter signup.</p>
+    <p>If you email or telephone the showroom, the dealership&#8217;s ordinary business records apply — your contact details,
+      the car in question and the content of the conversation. Ask for those records to be removed by writing to
+      <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>; a photograph you send for a valuation sits in their inbox until they delete
+      it, so say if you want it gone.</p>
+
+    <h2 id="terms" style="font-size:var(--s3);margin-top:clamp(30px,3.4vw,46px)">Terms and conditions</h2>
+    <div class="notes">
+      <h4>Draft — requires the dealership&#8217;s sign-off</h4>
+      <p style="margin:0">The dealership publishes no terms of sale on its existing website, so nothing here should be read
+        as an agreement. Before this section is finalised, the owner should confirm: booking-amount and refund terms, the
+        &#8220;as inspected&#8221; wording for each car, who bears RC transfer charges and road-tax liability, how an
+        exchange value is adjusted, and the route for a complaint. This page exists so those decisions are visible rather
+        than quietly invented by whoever builds the next page.</p>
+    </div>
+    <ul class="policy-list" style="margin-top:22px">
+      <li><b>The seller</b> is Sohan Automobile, {{ADDRESS}}, {{ADDRESS_CITY}}. This website presents the dealership&#8217;s
+        listings; it is not a marketplace and it sells nothing itself.</li>
+      <li><b>Prices</b> are the asking figures published on the dealership&#8217;s listings as at {{VERIFIED}}. They are
+        quotable at the counter on the day, not binding from a webpage.</li>
+      <li><b>Availability</b> changes continuously. A car shown here may be reserved or sold; confirm by phone
+        (<a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>) before travelling.</li>
+      <li><b>Condition</b> is described from the listing and from inspection at the showroom. This site publishes no
+        independent inspection report, warranty or certification for any car.</li>
+      <li><b>Finance and insurance</b> are arranged by their providers. {{PH:finance}}, and no approval is implied by a
+        listing.</li>
+    </ul>
+
+    <h2 id="data" style="font-size:var(--s3);margin-top:clamp(30px,3.4vw,46px)">About our listing data</h2>
+    <p>Every specification, photograph and price on this site is taken from the dealership&#8217;s own published material:
+      its website at <a href="{{SOURCE_SITE}}">{{SOURCE_SITE}}</a> for the company details, and its dealer-directory
+      listings at <a href="{{SOURCE_INVENTORY}}">{{SOURCE_INVENTORY}}</a> for the individual cars, captured on
+      {{VERIFIED}}.</p>
+    <p>Where a published listing stated nothing — a transmission type, most often — the page records
+      <em>not stated in the listing</em>. Fields are never inferred from the model name, because a variant that exists in a
+      brochure need not be the car on the floor. The completeness line on each vehicle page tells you how many of the seven
+      standard fields that car&#8217;s listing actually carried.</p>
+    <p>The dealership reports roughly {{FLOOR}} cars on its books, of which {{PUBLISHED}} are published with photographs
+      online; the remainder are sold directly from the forecourt. That gap is stated on the collection page rather than
+      hidden behind a &#8220;view all&#8221; button that leads nowhere.</p>
+    <div class="notes" style="margin-top:22px">
+      <h4>Corrections</h4>
+      <p style="margin:0">If you are the dealership and a figure here is stale, or you are a buyer and a car was not as
+        described, write to <a href="mailto:{{EMAIL}}">{{EMAIL}}</a> with the listing reference
+      (each vehicle page prints one). Listing data is regenerated from a single file, so a correction lands everywhere at
+      once — on the card, the filters and the vehicle page.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+{{FOOTER}}
+{{SCRIPT}}
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse Pre-Owned Cars in Kolkata | Sohan Automobile</title>
+<meta name="description" content="Every car this dealership publishes online: manufacturer, year, variant, odometer, fuel, transmission where stated, and asking price. Filter by brand, budget, year, fuel, gearbox and body type.">
+<link rel="canonical" href="inventory.html">
+<meta property="og:title" content="Browse cars — Sohan Automobile, Kolkata">
+<meta property="og:description" content="The published pre-owned collection, with specifications as the dealer listed them and gaps marked.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#070B09">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+{{STYLES}}
+</head>
+<body data-page="inventory">
+{{NAV}}
+
+<main id="main">
+<header class="pagehead band--surface">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> <span aria-hidden="true">/</span>
+      <span aria-current="page">Browse cars</span></nav>
+    <div class="head" style="margin-bottom:0">
+      <div>
+        <p class="kicker">The collection · {{PUBLISHED}} published of {{FLOOR}} on the books</p>
+        <h1 style="max-width:22ch">Every car currently<br>listed online.</h1>
+      </div>
+      <div class="head__aside">
+        <p class="lede" style="max-width:36ch;margin:0">Filter by manufacturer, budget, year, fuel, gearbox or body type.
+          Sorting runs across the whole published set — and the rest of the floor is only a phone call away.</p>
+        <a class="tlink" href="tel:{{PHONE_HREF}}">Ask for the full list — {{PHONE}}</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="band--sm" style="padding-top:clamp(24px,3vw,38px)" aria-label="Filtered results">
+  <div class="wrap" data-inventory>
+    {{FILTERS}}
+
+    <div class="results" role="status" aria-live="polite">
+      <p>Showing <b data-count>{{PUBLISHED}}</b> of {{PUBLISHED}} published cars · prices and availability as listed on {{VERIFIED}}</p>
+      <button class="link-btn" type="button" data-clear>Clear all filters</button>
+    </div>
+
+    <div class="veh-grid veh-grid--3" data-grid>
+      {{CAR_CARDS:ALL}}
+    </div>
+
+    <div class="notes" data-empty hidden style="margin-top:8px">
+      <h4>Nothing matches those filters</h4>
+      <p style="margin-bottom:0">The floor holds around {{FLOOR}} cars and only {{PUBLISHED}} are published here, so an empty
+        result is not the same as no stock. Loosen a filter, or call <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a> with your
+        budget and the model you want.</p>
+    </div>
+
+    <hr class="rule" style="margin-top:clamp(38px,4.4vw,58px)">
+
+    <div class="inventory-foot">
+      <div>
+        <p class="kicker">Reading a listing here</p>
+        <h2 style="font-size:var(--s3);max-width:24ch">What is stated, and what<br>is deliberately missing.</h2>
+      </div>
+      <div class="stack">
+        <p class="lede" style="margin:0">Fields shown in green come from the dealership&#8217;s published listing. Where a
+          listing never stated something — a transmission type, most often — the card says <em>not stated</em> instead of
+          inferring it from the model name. <a href="legal.html#data">How this data was assembled →</a></p>
+        <dl class="legend-list tnum">
+          <div><dt>Price range</dt><dd>{{PRICE_MIN}} – {{PRICE_MAX}}</dd></div>
+          <div><dt>Brands published</dt><dd>{{MAKES}}</dd></div>
+          <div><dt>Fuel types</dt><dd>Petrol · Diesel</dd></div>
+          <div><dt>Verification date</dt><dd>{{VERIFIED}}</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+{{FOOTER}}
+{{SCRIPT}}
+</body>
+</html>

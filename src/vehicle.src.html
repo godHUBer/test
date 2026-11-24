@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{CAR_TITLE}}</title>
+<meta name="description" content="{{CAR_DESC}}">
+<link rel="canonical" href="{{CANONICAL}}">
+<meta property="og:title" content="{{CAR_NAME}} — {{CAR_PRICE}}">
+<meta property="og:description" content="{{CAR_KM}}, {{CAR_FUEL}}, {{CAR_YEAR}} model year. Available to view at Sohan Automobile, Kolkata.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="assets/img/stock/{{CAR_ID}}.jpg">
+<meta name="theme-color" content="#070B09">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+{{STYLES}}
+</head>
+<body data-page="inventory">
+{{NAV}}
+
+<main id="main">
+
+<!-- ================================================== VEHICLE HEADER === -->
+<header class="pagehead band--surface">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="index.html">Home</a> <span aria-hidden="true">/</span>
+      <a href="inventory.html">Browse cars</a> <span aria-hidden="true">/</span>
+      <span aria-current="page">{{CAR_NAME}}</span>
+    </nav>
+    <div class="car-head">
+      <div>
+        <p class="kicker">{{CAR_BODY}} · {{CAR_REG}} registration · listed as available</p>
+        <h1>{{CAR_NAME}}</h1>
+        <p class="car-head__variant">{{CAR_VARIANT}}</p>
+      </div>
+      <div class="car-head__price">
+        <span class="price-lg tnum">{{CAR_PRICE}}<small>Asking price, as listed on {{VERIFIED}}</small></span>
+        {{CAR_PRICE_NOTE}}
+      </div>
+    </div>
+    <div class="badge-row" style="margin-top:22px">
+      {{CAR_TAGS}}
+      <span class="tag tag--bright">Listing data: {{CAR_COMPLETE}} fields published</span>
+    </div>
+  </div>
+</header>
+
+<!-- ========================================================== GALLERY === -->
+<section class="band--sm gallery-band" aria-label="Photographs of this car">
+  <div class="wrap">
+    <div class="gallery" data-gallery>
+      <div class="gallery__stage">
+        {{CAR_FRAMES}}
+        <button class="gallery__nav gallery__nav--prev" type="button" data-gallery-prev aria-label="Previous photograph">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M15 8H2M6.5 3L2 8l4.5 5"/></svg></button>
+        <button class="gallery__nav gallery__nav--next" type="button" data-gallery-next aria-label="Next photograph">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M1 8h13M9.5 3l5 5-5 5"/></svg></button>
+        <span class="gallery__counter tnum" data-gallery-count aria-live="polite">{{CAR_GALLERY_COUNT}}</span>
+        <button class="gallery__zoom" type="button" data-lightbox-open aria-label="Open photographs full size">Enlarge</button>
+      </div>
+      <div class="gallery__thumbs" role="group" aria-label="Choose a photograph">
+        {{CAR_THUMBS}}
+      </div>
+    </div>
+    <p class="small dim gallery-note">Photographs were taken at the showroom for the listing — {{CAR_FRAMES_COUNT}} angles are published for
+      this car. Interior, dash, boot and wheel photographs have not been published; ask for them before you travel.</p>
+  </div>
+</section>
+
+<!-- ================================================= SPEC + SIDE CARD === -->
+<section class="band" style="padding-top:clamp(20px,2.6vw,34px)" aria-labelledby="facts-h">
+  <div class="wrap grid car-body-grid">
+    <div class="car-body-main">
+
+      <h2 id="facts-h" class="sr-only">Specification and description</h2>
+
+      <div class="block">
+        <p class="kicker">The facts</p>
+        <dl class="spec-table tnum">
+          {{CAR_SPEC_ROWS}}
+          <div><dt>Asking price</dt><dd>{{CAR_PRICE}}</dd></div>
+          <div><dt>Availability</dt><dd>Listed as available on {{VERIFIED}}</dd></div>
+        </dl>
+        <p class="small dim" style="margin-top:16px">Read with the photographs: the odometer and fuel type are what the
+          listing states. Anything the listing never stated is marked here rather than guessed from the model name.</p>
+      </div>
+
+      <div class="block">
+        <p class="kicker">Overview</p>
+        <p class="lede" style="max-width:62ch">{{CAR_OVERVIEW}}</p>
+      </div>
+
+      <div class="block">
+        <p class="kicker">What the dealer flagged</p>
+        <div class="badge-row">
+          {{CAR_TAGS}}
+        </div>
+        <p class="small dim" style="margin-top:14px;max-width:62ch">{{CAR_HIGHLIGHT_NOTE}}</p>
+      </div>
+
+      <div class="block">
+        <p class="kicker">Documents and history</p>
+        <div class="doc-grid">
+          <div class="doc doc--yes"><b>Published on this page</b>
+            <ul>
+              <li>Registration city — {{CAR_REG}}</li>
+              <li>Odometer — {{CAR_KM}}, as listed</li>
+              <li>Year, variant, fuel and body type</li>
+              <li>Location for viewing</li>
+            </ul></div>
+          <div class="doc doc--ask"><b>Ask the showroom for</b>
+            <ul>
+              <li>Registration certificate and owner sequence</li>
+              <li>Insurance status and expiry</li>
+              <li>PUC certificate and any fitness paperwork</li>
+              <li>Service invoices, where they were kept</li>
+            </ul></div>
+          <div class="doc doc--none"><b>Not published</b>
+            <ul>
+              <li>{{PH:inspection}}</li>
+              <li>{{PH:warranty}}</li>
+              <li>No independent certificate number or audit report exists for this car</li>
+            </ul></div>
+        </div>
+        <p class="small dim" style="margin-top:16px;max-width:62ch">Nothing here should be read as a guarantee of condition.
+          If a lender or an inspector needs documents, the dealership supplies them at the showroom — ask before paying a
+          booking amount.</p>
+      </div>
+
+      <div class="block">
+        <p class="kicker">Location and viewing</p>
+        <div class="viewing">
+          <div>
+            <h4>{{BRAND}} · {{AREA}}</h4>
+            <p class="small" style="margin:0">{{ADDRESS}}, {{ADDRESS_CITY}}<br>
+              <a href="{{MAP_URL}}" target="_blank" rel="noopener">Open in Google Maps</a> ·
+              <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a></p>
+          </div>
+          <p class="small dim" style="margin:0;max-width:34ch">{{PH:hours}}. Several listings for this car&#8217;s class carry a
+            home test drive note — {{PH:testdrive}}.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <p class="kicker">Source</p>
+        <p class="small dim" style="margin:0">Specification, price and photographs for this car were taken from the
+          dealership&#8217;s published listing on {{VERIFIED}}:
+          <a href="{{CAR_LISTING_URL}}" target="_blank" rel="noopener">view the original listing</a>.
+          If the two disagree, the dealership&#8217;s counter is authoritative.</p>
+      </div>
+    </div>
+
+    <aside>
+      <div class="aside-card">
+        <p class="aside-price tnum">{{CAR_PRICE}}</p>
+        <p class="aside-status"><span aria-hidden="true"></span>Available to view · {{CAR_LOCATION}}</p>
+        <dl class="grid-list tnum">
+          <div><dt>Year</dt><dd>{{CAR_YEAR}}</dd></div>
+          <div><dt>Odometer</dt><dd>{{CAR_KM}}</dd></div>
+          <div><dt>Fuel</dt><dd>{{CAR_FUEL}}</dd></div>
+          <div><dt>Body</dt><dd>{{CAR_BODY}}</dd></div>
+          <div><dt>Data published</dt><dd>{{CAR_COMPLETE}}</dd></div>
+        </dl>
+        <a class="btn btn--solid btn--block" href="#enquire">Enquire About This Car</a>
+        <a class="btn btn--line btn--block" href="#enquire" data-prefill-viewing="This week">Book a Showroom Viewing</a>
+        <p class="hint" style="margin:14px 0 0">Or call <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a> and quote
+          <b>{{CAR_NAME}}</b>. Listing reference <span class="tnum">{{CAR_ID}}</span>.</p>
+        <hr class="rule" style="margin:20px 0">
+        <p class="small dim" style="margin:0">There is exactly one of this car. It may already be reserved while you read —
+          a phone call settles it in a minute.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ======================================================== ENQUIRY ===== -->
+<section class="band band--surface" id="enquire" aria-labelledby="enquire-h">
+  <div class="wrap grid g-7-5">
+    <div>
+      <p class="kicker">Enquire</p>
+      <h2 id="enquire-h" style="font-size:var(--s3)">Enquire about this car</h2>
+      <p class="lede">Tell us what you need to know — the odometer, the owner sequence, whether it can be driven on your
+        road, when you can come. This form composes an email on your device and includes the car details so nothing has to
+        be repeated.</p>
+      <form class="form form--2" data-mailto="{{EMAIL}}"
+            data-subject="Enquiry: {{CAR_NAME}} {{CAR_VARIANT}}"
+            data-context="Listing: {{CAR_NAME}} {{CAR_VARIANT}} · {{CAR_PRICE}} · {{CAR_KM}} · ref {{CAR_ID}}" novalidate>
+        <div class="field">
+          <label for="e-name">Your name <span class="req" aria-hidden="true">*</span></label>
+          <input id="e-name" name="Name" type="text" required autocomplete="name">
+          <span class="error-msg" role="alert">Please add your name.</span>
+        </div>
+        <div class="field">
+          <label for="e-phone">Phone number <span class="req" aria-hidden="true">*</span></label>
+          <input id="e-phone" name="Phone" type="tel" required inputmode="tel" autocomplete="tel">
+          <span class="error-msg" role="alert">A number we can actually reach you on.</span>
+        </div>
+        <div class="field">
+          <label for="e-email">Email</label>
+          <input id="e-email" name="Email" type="email" autocomplete="email">
+          <span class="error-msg" role="alert">That email address looks incomplete.</span>
+        </div>
+        <div class="field">
+          <label for="e-when">When can you view it?</label>
+          <select id="e-when" name="Preferred viewing">
+            <option value="">No preference</option>
+            <option>This week</option><option>Next week</option><option>Weekend</option>
+            <option>Home test drive instead</option>
+          </select>
+        </div>
+        <div class="field form__full">
+          <label for="e-msg">Your question <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="e-msg" name="Question" required
+            placeholder="e.g. Is the service book available? Can I take it to my mechanic? Is the price firm?"></textarea>
+          <span class="error-msg" role="alert">Add one line so we know what to answer.</span>
+        </div>
+        <div class="form__full" style="display:grid;gap:12px">
+          <button class="btn btn--solid" type="submit">Enquire About This Car
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8h13M9.5 3l5 5-5 5"/></svg></button>
+          <p class="hint">Nothing is submitted to a server: your mail app opens with these details written out, and a copy
+            button appears in case it does not open. There is no booking form, no deposit, and no obligation.</p>
+          <div class="form__status" role="status" tabindex="-1"></div>
+        </div>
+      </form>
+    </div>
+    <aside class="stack-lg">
+      <div class="notes">
+        <h4>What a useful question looks like</h4>
+        <ul>
+          <li>Owner sequence and whether the RC matches the seller</li>
+          <li>Insurance type and expiry date</li>
+          <li>Invoice copies for any work done in the last year</li>
+          <li>Whether you may take it to your own mechanic before paying</li>
+          <li>What is included in the quoted on-road figure</li>
+        </ul>
+      </div>
+      <div class="notes">
+        <h4>Viewing, in practice</h4>
+        <p style="margin:0">{{PH:hours}}. Agree a time on the phone, and give yourself an hour: cold start, walk-around,
+          then a drive on traffic you know rather than a two-lap loop.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================================================== SIMILAR CARS ===== -->
+<section class="band" aria-labelledby="similar-h">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <p class="kicker">Also on the floor</p>
+        <h2 id="similar-h">Similar cars, same collection.</h2>
+      </div>
+      <div class="head__aside">
+        <p class="small dim" style="max-width:34ch;margin:0">Chosen on body type and asking price — not a sponsored list.</p>
+        <a class="tlink" href="inventory.html">Browse all {{PUBLISHED}} published cars</a>
+      </div>
+    </div>
+    <div class="shot-grid">
+      {{CAR_SIMILAR}}
+    </div>
+  </div>
+</section>
+
+</main>
+{{FOOTER}}
+
+<div class="lightbox" data-lightbox role="dialog" aria-modal="true" aria-label="Photograph viewer">
+  <button class="lightbox__close" type="button" data-lightbox-close aria-label="Close viewer">×</button>
+  <img src="{{CAR_LIGHTBOX}}" alt="">
+  <p class="lightbox__cap"></p>
+</div>
+{{SCRIPT}}
+</body>
+</html>
