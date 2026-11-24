@@ -348,3 +348,18 @@ Applied via `create_migration` (auto-rollback on failure); mirrored to `supabase
 | audit entries for insert / status / multi-field update / delete | correct summaries + diffs | ✅ e.g. `car.update` → `{"km": {from: 5000, to: 6100}, "highlights": {from: [], to: ["Less driven"]}, "price_lakh": {from: 3.00, to: 3.25}}` |
 
 Actor/IP/UA are null in these test rows because they ran over the direct connection without a JWT — real admin actions through the panel carry full identity (that path is exercised in Phase 4). Test rows (`selftest-phase1/2`) were removed; their six honest log entries remain in `activity_log` as setup history.
+
+### Phase 2 — Seed · **complete** (24 Nov 2026)
+
+`scripts/seed_supabase.py` generates idempotent SQL (`ON CONFLICT (id) DO NOTHING`) from `inventory.json`; the generated seed was executed via `execute_query`. The database holds admin-editable facts only — static-site copy (`established`, `ledBy`, `sourceInventory`, `sourceSite`, `social`) deliberately stays in JSON/build land.
+
+| Acceptance test | Expected | Result |
+| --- | --- | --- |
+| Row counts after seed | 15 cars, 1 brand row | ✅ |
+| Log entries | 22 = 6 (Phase 1 self-tests) + 1 `brand.init` + 15 `car.create` | ✅ |
+| Field parity vs `inventory.json` | every field of every car | ✅ programmatic diff: **PASS** (incl. `Vit'Brezza` apostrophe, ₹ price notes, highlight arrays, nulls, `featured: xl6-2025`, `sort_order = (i+1)*10`) |
+| Idempotency probe (re-INSERT `creta-2018` with price 9.99) | original 6.00 survives, no duplicate, no spurious log rows | ✅ price 6.00, 15 cars, 22 log entries |
+| anon visibility | all 15 available cars visible | ✅ |
+| `brand_settings` | name/phone/email/services[6]/hours null/verifiedOn 2026-11-24 | ✅ |
+
+Re-seeding later is safe by construction: existing rows are never overwritten, so admin edits survive. `sync_db.py` (Phase 5) will own the JSON ← DB direction.
