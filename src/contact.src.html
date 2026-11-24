@@ -72,7 +72,7 @@
           <select id="q-car" name="Car">
             {{CAR_OPTIONS:optional}}
           </select>
-          <span class="hint">Only the {{PUBLISHED}} cars published on this site are listed. For anything on the floor that
+          <span class="hint">Only the <span data-count-published>{{PUBLISHED}}</span> cars published on this site are listed. For anything on the floor that
             is not online, say the model in your message and we will look it up.</span>
         </div>
         <div class="field">
@@ -150,6 +150,7 @@
 
 </main>
 {{FOOTER}}
+{{DATA}}
 {{SCRIPT}}
 </body>
 </html>

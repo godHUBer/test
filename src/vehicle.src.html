@@ -17,7 +17,7 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 {{STYLES}}
 </head>
-<body data-page="inventory">
+<body data-page="inventory" data-car-id="{{CAR_ID}}">
 {{NAV}}
 
 <main id="main">
@@ -256,7 +256,7 @@
       </div>
       <div class="head__aside">
         <p class="small dim" style="max-width:34ch;margin:0">Chosen on body type and asking price — not a sponsored list.</p>
-        <a class="tlink" href="inventory.html">Browse all {{PUBLISHED}} published cars</a>
+        <a class="tlink" href="inventory.html">Browse all <span data-count-published>{{PUBLISHED}}</span> published cars</a>
       </div>
     </div>
     <div class="shot-grid">
@@ -273,6 +273,7 @@
   <img src="{{CAR_LIGHTBOX}}" alt="">
   <p class="lightbox__cap"></p>
 </div>
+{{DATA}}
 {{SCRIPT}}
 </body>
 </html>

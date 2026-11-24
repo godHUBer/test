@@ -50,6 +50,7 @@ DATA = json.loads((ASSETS / "data/inventory.json").read_text(encoding="utf-8"))
 BRAND, CARS = DATA["brand"], DATA["cars"]
 CSS = (ASSETS / "css/styles.css").read_text(encoding="utf-8").strip()
 JS = (ASSETS / "js/site.js").read_text(encoding="utf-8").strip()
+DATAJS = (ASSETS / "js/data.js").read_text(encoding="utf-8").strip()
 
 def check_btn_variants() -> None:
     """A renamed class leaves its rules behind in the stylesheet, and the stale ones are
@@ -207,7 +208,7 @@ def render_nav(current: str, overlay: bool) -> str:
     <p>{e(BRAND["addressShort"])}, {e(BRAND["addressCity"])}<br>
       <a href="{e(BRAND["mapUrl"])}" target="_blank" rel="noopener">Open in Google Maps</a> ·
       <a href="mailto:{e(BRAND["email"])}">{e(BRAND["email"])}</a></p>
-    <p class="sheet__meta-note">{len(CARS)} cars published online · {FLOOR_COUNT} on the books ·
+    <p class="sheet__meta-note"><span data-count-published>{len(CARS)}</span> cars published online · {FLOOR_COUNT} on the books ·
       data as listed {VERIFIED_PRETTY}</p>
   </div>
   <div class="sheet__foot">
@@ -286,7 +287,7 @@ def render_card(car, idx=0, eager=False) -> str:
     elif "Service history available" in car.get("highlights", []):
         flag = '<span class="veh__flag">Service history noted</span>'
     trans = e(car["transmission"]) if car["transmission"] else '<span class="to-confirm">Not stated</span>'
-    return f"""<article class="veh" data-card data-reveal style="--d:{(idx % 3) * 90}ms"
+    return f"""<article class="veh" data-card data-reveal data-car-id="{e(car["id"])}" style="--d:{(idx % 3) * 90}ms"
    data-make="{e(car["make"])}" data-body="{e(car["body"])}" data-fuel="{e(car["fuel"])}"
    data-year="{car["year"]}" data-price="{car["priceLakh"]}" data-km="{car["km"]}"
    data-trans="{e((car["transmission"] or "unlisted").split(" ")[0])}">
@@ -331,7 +332,7 @@ def render_featured(car) -> str:
     ]
     spec = "\n".join(f"      <div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in rows)
     tags = "\n".join(f'      <span class="tag">{e(t)}</span>' for t in car.get("highlights", []))
-    return f"""<article class="veh-hero">
+    return f"""<article class="veh-hero" data-car-id="{e(car["id"])}">
   <a class="veh-hero__media" href="car-{car["id"]}.html" aria-label="Open the listing for {e(name(car))}">
     <img src="{p}" srcset="{sm} 480w, {p} 900w" sizes="(min-width:1000px) 57vw, 92vw"
       alt="{e(name(car))} {e(car["variant"])} on the dealership forecourt" width="{w}" height="{h}"
@@ -475,9 +476,13 @@ def car_tokens(car) -> dict:
     shots = render_shots(sim[:4])
     gal = gallery_paths(car)
     w, h = dims(stock_path(car))
+    def frame_attrs(i: int) -> str:
+        # a helper keeps backslashes out of the f-string expression (Python 3.11 compatible)
+        return 'loading="eager" fetchpriority="high"' if i == 0 else 'loading="lazy"'
+
     frames = "\n".join(
         f'      <img data-frame src="{g}" alt="{e(name(car))} {e(car["variant"])}, view {i + 1} of {len(gal)} at the showroom" '
-        f'width="{max(w, 1400)}" height="{max(h, 1050)}" {"loading=\"eager\" fetchpriority=\"high\"" if i == 0 else "loading=\"lazy\""} decoding="async">'
+        f'width="{max(w, 1400)}" height="{max(h, 1050)}" {frame_attrs(i)} decoding="async">'
         for i, g in enumerate(gal))
     thumbs = "\n".join(
         f'      <button type="button" data-thumb aria-current="{"true" if i == 0 else "false"}" '
@@ -603,7 +608,7 @@ def special_tokens(html: str, ctx: dict) -> str:
         sel = m.group(1) if m.group(1) else ""
         out = ['<option value="">Which car? (optional)</option>'] if sel == "optional" else []
         for c in sorted(CARS, key=lambda c: (c["make"], c["year"])):
-            out.append(f'<option value="{e(name(c) + " " + c["variant"])}">{e(name(c))} — {e(c["variant"])} '
+            out.append(f'<option value="{e(name(c) + " " + c["variant"])}" data-car-id="{e(c["id"])}">{e(name(c))} — {e(c["variant"])} '
                        f'· {price(c["priceLakh"])}</option>')
         return "\n      ".join(out)
     html = re.sub(r"\{\{CAR_OPTIONS(?::?([a-z]+))?\}\}", lambda m: options(m), html)
@@ -629,6 +634,7 @@ def render(src_name: str, out_name: str, ctx: dict, destdir: Path) -> str:
     body = special_tokens(raw, ctx)
     body = body.replace("{{STYLES}}", f"<style>\n{CSS}\n</style>")
     body = body.replace("{{SCRIPT}}", f"<script>\n{JS}\n</script>")
+    body = body.replace("{{DATA}}", f"<script>\n{DATAJS}\n</script>")
     body, _ = inject(body, ctx, src_name)
     # the inlined stylesheet legitimately holds SVG data URIs, so check only the markup
     head = body.split("<style>")[0].split("</head>")[0]

@@ -363,3 +363,13 @@ Actor/IP/UA are null in these test rows because they ran over the direct connect
 | `brand_settings` | name/phone/email/services[6]/hours null/verifiedOn 2026-11-24 | ✅ |
 
 Re-seeding later is safe by construction: existing rows are never overwritten, so admin edits survive. `sync_db.py` (Phase 5) will own the JSON ← DB direction.
+
+### Phase 3 — Public runtime layer · **complete** (24 Nov 2026)
+
+**Plan amendment (documented):** migration `public_read_includes_reserved_and_sold` widens the anon SELECT to `available + reserved + sold` — the sold-notice-on-detail-page policy requires the public page to *know* a car is sold; `hidden` remains invisible. Reserved cars stay in grids with a "Reserved — call to confirm" badge (the CSS already had `veh__status--pending`).
+
+**New `assets/js/data.js` (~10 KB, no dependencies):** fetches published cars from PostgREST with the publishable key (2.5 s abort timeout), then reconciles: patches card/hero/detail prices and odometers, badges reserved, removes sold cards from grids while their detail pages get an honest "This car has been sold" banner (CTA buttons + enquiry section hidden), appends panel-added cars into the inventory and home grids (photo from Storage, or a labelled "Photograph pending" block; call-to-enquire instead of a link, since their detail pages exist only after the next rebuild), removes sold cars from the contact dropdown, updates every `[data-count-published]` figure and the inventory "Showing X of Y" line. Any failure — offline, slow, blocked — leaves the static page exactly as built.
+
+**Additive changes:** `build.py` (Python 3.11 f-string compat fix via `frame_attrs()` helper — the build now runs on 3.11.2; `{{DATA}}` token inlining `data.js`; `data-car-id` on cards/hero/options; nav-sheet count span), `site.js` (`apply()` re-reads the grid so counts/filters follow live-layer removals and appends), templates (8 × `{{DATA}}`; `[data-count-published]` spans around every published-count; `data-featured-slot`, `data-home-grid`; vehicle `<body data-car-id>`).
+
+**Acceptance:** `node --check` clean on both scripts · `build.py` + `build.py --check` pass on 3.11 (22 pages) · every page carries the markers and inlines `data.js` · zero leftover `{{…}}` tokens · preview serving on :8000 with the live layer fetching the seeded 15.

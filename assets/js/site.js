@@ -176,6 +176,10 @@
       return state;
     }
     function apply(push) {
+      /* re-read the grid: the live data layer may have removed sold cars or
+         appended panel-added ones after boot, so the counts must follow */
+      cards = $$('[data-card]', root);
+      original = cards.slice();
       var state = readControls();
       var shown = 0, order = [];
 

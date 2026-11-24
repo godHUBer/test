@@ -26,7 +26,7 @@
       <span aria-current="page">Browse cars</span></nav>
     <div class="head" style="margin-bottom:0">
       <div>
-        <p class="kicker">The collection · {{PUBLISHED}} published of {{FLOOR}} on the books</p>
+        <p class="kicker">The collection · <span data-count-published>{{PUBLISHED}}</span> published of {{FLOOR}} on the books</p>
         <h1 style="max-width:22ch">Every car currently<br>listed online.</h1>
       </div>
       <div class="head__aside">
@@ -43,7 +43,7 @@
     {{FILTERS}}
 
     <div class="results" role="status" aria-live="polite">
-      <p>Showing <b data-count>{{PUBLISHED}}</b> of {{PUBLISHED}} published cars · prices and availability as listed on {{VERIFIED}}</p>
+      <p>Showing <b data-count>{{PUBLISHED}}</b> of <span data-count-published>{{PUBLISHED}}</span> published cars · prices and availability as listed on {{VERIFIED}}</p>
       <button class="link-btn" type="button" data-clear>Clear all filters</button>
     </div>
 
@@ -53,7 +53,7 @@
 
     <div class="notes" data-empty hidden style="margin-top:8px">
       <h4>Nothing matches those filters</h4>
-      <p style="margin-bottom:0">The floor holds around {{FLOOR}} cars and only {{PUBLISHED}} are published here, so an empty
+      <p style="margin-bottom:0">The floor holds around {{FLOOR}} cars and only <span data-count-published>{{PUBLISHED}}</span> are published here, so an empty
         result is not the same as no stock. Loosen a filter, or call <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a> with your
         budget and the model you want.</p>
     </div>
@@ -81,6 +81,7 @@
 </section>
 </main>
 {{FOOTER}}
+{{DATA}}
 {{SCRIPT}}
 </body>
 </html>

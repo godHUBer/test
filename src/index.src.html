@@ -38,7 +38,7 @@
     </div>
     <p class="hero__credit">In stock at the showroom · 2023 Vit&#8217;Brezza ZXi · 18,859 km</p>
     <div class="hero__foot tnum">
-      <span><b data-countup>{{PUBLISHED}}</b> cars published online</span><span class="sep">/</span>
+      <span><b data-countup data-count-published>{{PUBLISHED}}</b> cars published online</span><span class="sep">/</span>
       <span><b data-countup>{{FLOOR}}</b> on the books</span><span class="sep">/</span>
       <span>Since <b data-countup="plain">{{YEAR}}</b></span><span class="sep">/</span>
       <span>{{AREA}}</span><span class="sep">/</span>
@@ -94,20 +94,20 @@
       <div class="head__aside">
         <p class="lede" style="max-width:40ch">Explore our latest arrivals and discover the vehicles currently available
           in our collection.</p>
-        <a class="tlink" href="inventory.html">All {{PUBLISHED}} published cars
+        <a class="tlink" href="inventory.html">All <span data-count-published>{{PUBLISHED}}</span> published cars
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8h13M9.5 3l5 5-5 5"/></svg></a>
       </div>
     </div>
 
-    <div data-reveal style="margin-bottom:clamp(34px,4.4vw,62px)">{{CAR_CARDS:FEATURED}}</div>
+    <div data-reveal data-featured-slot style="margin-bottom:clamp(34px,4.4vw,62px)">{{CAR_CARDS:FEATURED}}</div>
 
-    <div class="veh-grid veh-grid--3">
+    <div class="veh-grid veh-grid--3" data-home-grid>
       {{CAR_CARDS:GRID}}
     </div>
 
     <div class="collection-foot">
       <dl class="mini-facts tnum">
-        <div><dt>Published here</dt><dd>{{PUBLISHED}} cars</dd></div>
+        <div><dt>Published here</dt><dd><span data-count-published>{{PUBLISHED}}</span> cars</dd></div>
         <div><dt>On the books</dt><dd>{{FLOOR}} cars</dd></div>
         <div><dt>Price range</dt><dd>{{PRICE_MIN}} – {{PRICE_MAX}}</dd></div>
         <div><dt>Brands</dt><dd>{{MAKES}}</dd></div>
@@ -253,7 +253,7 @@
     </div>
     <div class="faq">
       <details><summary><span class="no">01</span>How can I browse the cars you have?<span class="sign" aria-hidden="true"></span></summary>
-        <div class="faq__body"><p>The <a href="inventory.html">collection page</a> holds {{PUBLISHED}} of the {{FLOOR}} cars
+        <div class="faq__body"><p>The <a href="inventory.html">collection page</a> holds <span data-count-published>{{PUBLISHED}}</span> of the {{FLOOR}} cars
           the dealership keeps on its books — those are the ones published online with photographs and specifications. The
           balance is sold directly from the floor. Call <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a> and ask for the full list;
           it takes a minute and it is current in a way a website cannot always be.</p></div></details>
@@ -302,6 +302,7 @@
 
 </main>
 {{FOOTER}}
+{{DATA}}
 {{SCRIPT}}
 </body>
 </html>
