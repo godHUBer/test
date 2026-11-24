@@ -302,3 +302,23 @@ Guardrails preserved: `build.py`'s token whitelist gets the admin tokens added p
 ## 11 · What will not change
 
 `file://` compatibility, self-contained pages, no frameworks/CDN/analytics, the six editorial rules, `build.py`'s loud-failure guards, the dark design system, mailto forms (through Phase 5), and the public pages' copy. The plan adds a live data layer and a control room around the site that exists — it does not rewrite it.
+
+---
+
+## 12 · Implementation log
+
+### Phase 0 — Project · **complete** (24 Nov 2026)
+
+| Item | Value |
+| --- | --- |
+| Organization | `b3astgam3r2010@gmail.com's Org` (`sgcauonmwuevztqwmpsr`) |
+| Project | **sohan-automobile** · ref `vxlxoiycolfojcnhnzfr` |
+| Region / plan | `ap-south-1` (Mumbai) · free |
+| Health | `ACTIVE_HEALTHY` — auth, db, pooler, rest, storage, pg_bouncer all healthy |
+| Project URL | `https://vxlxoiycolfojcnhnzfr.supabase.co` |
+| Publishable key | `site_anon` → `sb_publishable_7OTbCZGA4jhjP4sL6KAg0A_fjsfo9js` (public by design — ships in HTML from Phase 3; read-only under RLS) |
+| Auth config | site_url `http://localhost:8000` (placeholder until hosting is known — update in Phase 5) · allow-list localhost only · JWT 1 h · refresh-token rotation on (reuse interval 10 s) · email auth only, phone/OAuth off · mailer autoconfirm on |
+| Signup | **temporarily enabled** for owner onboarding in Phase 4 — must be flipped off (`disable_signup: true`) once the admin account exists · tracked below |
+| DB password | delivered in chat once; never stored in the repo |
+
+Open items carried into Phase 1: none blocking. Q2/Q3/Q4 defaults remain in force unless the user overrides them.
