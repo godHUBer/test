@@ -322,3 +322,29 @@ Guardrails preserved: `build.py`'s token whitelist gets the admin tokens added p
 | DB password | delivered in chat once; never stored in the repo |
 
 Open items carried into Phase 1: none blocking. Q2/Q3/Q4 defaults remain in force unless the user overrides them.
+
+### Phase 1 — Schema, RLS, audit · **complete** (24 Nov 2026)
+
+Applied via `create_migration` (auto-rollback on failure); mirrored to `supabase/migrations/`:
+
+| # | Migration | Contents |
+| --- | --- | --- |
+| `20261124110715` | `create_admin_profiles_and_role_helpers` | `admin_profiles` (roles `owner/editor/pending`), `is_admin()`, `is_owner()`, `touch_updated_at()` |
+| `20261124110731` | `create_cars_table` | `cars` + status check + indexes + touch trigger + RLS (public: available-only SELECT; admins: full CRUD) |
+| `20261124110740` | `create_brand_settings_singleton` | `brand_settings` (id = 1, services/hours/showroom info) + RLS |
+| `20261124110816` | `create_activity_log_audit_and_storage` | `activity_log` (append-only), `log_activity()` SECURITY DEFINER trigger on all three tables, `handle_new_admin()` (pending-role auto-profile on signup), `record_auth_event()` RPC (anon: failed logins only, flood-guarded at 20/IP/15 min), `car-photos` public-read bucket + admin-only write policies |
+| `20261124110941` | `fix_log_activity_operator_precedence` | `||` and `->>` share a precedence level in PostgreSQL — two summary expressions needed parentheses |
+
+**Acceptance tests (all via direct SQL + role impersonation):**
+
+| Test | Expected | Result |
+| --- | --- | --- |
+| anon SELECT on `cars` (1 available car) | sees exactly it | ✅ 1 row |
+| anon INSERT into `cars` | RLS denial | ✅ `42501: new row violates row-level security` |
+| non-admin authenticated UPDATE on a car | row untouchable | ✅ 0 rows affected |
+| anon SELECT after car marked `sold` | sold invisible | ✅ 0 rows |
+| anon SELECT on `activity_log` | empty | ✅ 0 rows |
+| authenticated tamper attempt on `activity_log` (UPDATE summary) | row untouchable | ✅ 0 rows affected |
+| audit entries for insert / status / multi-field update / delete | correct summaries + diffs | ✅ e.g. `car.update` → `{"km": {from: 5000, to: 6100}, "highlights": {from: [], to: ["Less driven"]}, "price_lakh": {from: 3.00, to: 3.25}}` |
+
+Actor/IP/UA are null in these test rows because they ran over the direct connection without a JWT — real admin actions through the panel carry full identity (that path is exercised in Phase 4). Test rows (`selftest-phase1/2`) were removed; their six honest log entries remain in `activity_log` as setup history.
