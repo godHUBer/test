@@ -1,0 +1,353 @@
+{
+  "brand": {
+    "name": "Sohan Automobile",
+    "tagline": "Pre-owned, chosen carefully",
+    "established": "1997",
+    "ledBy": "Mr. Sovan Dey",
+    "phoneDisplay": "+91 98311 89375",
+    "phoneHref": "+919831189375",
+    "email": "sovandey74@yahoo.com",
+    "addressShort": "27, Barowaritala Road, Beleghata",
+    "addressCity": "Kolkata – 700010",
+    "area": "Beleghata / Garden Lane, Kolkata",
+    "mapUrl": "https://maps.app.goo.gl/Qpw9kzqenPV6DFey6",
+    "sourceInventory": "https://www.carwale.com/used/kolkata/?dealerId=21786",
+    "sourceSite": "https://www.sohanautomobile.com/",
+    "verifiedOn": "2026-11-24",
+    "services": [
+      "New and used car sales",
+      "Used car exchange",
+      "Car repairs",
+      "Car service",
+      "Car finance",
+      "Insurance"
+    ],
+    "hours": null,
+    "social": []
+  },
+  "cars": [
+    {
+      "id": "creta-2018",
+      "year": 2018,
+      "make": "Hyundai",
+      "model": "Creta",
+      "variant": "SX Plus 1.6 Petrol",
+      "km": 54929,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "SUV",
+      "priceLakh": 6.0,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Great Price",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/hyundai-creta/zb0rkblt/",
+      "overview": "The higher-specification Creta with the 1.6-litre petrol engine. Listed by the dealership as priced below its recent asking figure, and offered with a home test drive."
+    },
+    {
+      "id": "taigun-2022",
+      "year": 2022,
+      "make": "Volkswagen",
+      "model": "Taigun",
+      "variant": "Comfortline 1.0 TSI MT",
+      "km": 30043,
+      "fuel": "Petrol",
+      "transmission": "Manual",
+      "body": "SUV",
+      "priceLakh": 8.55,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "E20 compliant",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/volkswagen-taigun/i9igmope/",
+      "overview": "A three-year-old Comfortline with a modest 30,043 km on the clock. The listing notes E20 fuel compliance and a free home test drive."
+    },
+    {
+      "id": "sonet-2023",
+      "year": 2023,
+      "make": "Kia",
+      "model": "Sonet",
+      "variant": "HTX 1.0 Turbo Petrol iMT",
+      "km": 21245,
+      "fuel": "Petrol",
+      "transmission": "Manual (iMT)",
+      "body": "SUV",
+      "priceLakh": 7.9,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Excellent condition",
+        "Great Price",
+        "E20 compliant",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/kia-sonet/fxmt98xj/",
+      "overview": "The turbo-petrol HTX with the intelligent manual transmission, sunroof included. Lowest mileage of the SUVs currently on the list and described by the dealer as being in excellent condition."
+    },
+    {
+      "id": "xl6-2025",
+      "featured": true,
+      "year": 2025,
+      "make": "Maruti Suzuki",
+      "model": "XL6",
+      "variant": "Alpha Petrol Manual Smart Hybrid",
+      "km": 5633,
+      "fuel": "Petrol",
+      "transmission": "Manual",
+      "body": "MUV",
+      "priceLakh": 9.9,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Less driven",
+        "Great Price",
+        "E20 compliant",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/maruti-suzuki-xl6/6hutzpl3/",
+      "overview": "Top-specification Alpha, six seats, and only 5,633 km covered. The newest vehicle in the current collection by registration year."
+    },
+    {
+      "id": "brezza-2023",
+      "year": 2023,
+      "make": "Maruti Suzuki",
+      "model": "Vit'Brezza",
+      "variant": "ZXi [2023-2025]",
+      "km": 18859,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "SUV",
+      "priceLakh": 9.5,
+      "priceNote": "Reduced from ₹9.75 Lakh as listed",
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Less driven",
+        "Great Price",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/maruti-suzuki-vitara-brezza/jy422t2g/",
+      "overview": "ZXi variant with a recorded price reduction on the dealer's listing. Used as the cover photograph on this site because of its clear front-three-quarter angle."
+    },
+    {
+      "id": "dzire-2025",
+      "year": 2025,
+      "make": "Maruti Suzuki",
+      "model": "Dzire",
+      "variant": "VXi Petrol Automatic (AMT)",
+      "km": 13082,
+      "fuel": "Petrol",
+      "transmission": "Automatic (AMT)",
+      "body": "Sedan",
+      "priceLakh": 7.35,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Less driven",
+        "E20 compliant",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/maruti-suzuki-dzire/877ttwyw/",
+      "overview": "The AMT Dzire — the automatic sedan in the current collection, with 13,082 km and an E20-compliant listing note."
+    },
+    {
+      "id": "dzire-2021",
+      "year": 2021,
+      "make": "Maruti Suzuki",
+      "model": "Dzire",
+      "variant": "VXi [2020-2023]",
+      "km": 35127,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "Sedan",
+      "priceLakh": 5.65,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/maruti-suzuki-dzire/aij0th7m/",
+      "overview": "A well-balanced VXi from the previous generation: city mileage, known service network and a straightforward asking price."
+    },
+    {
+      "id": "punch-2024",
+      "year": 2024,
+      "make": "Tata",
+      "model": "Punch",
+      "variant": "Pure MT",
+      "km": 6389,
+      "fuel": "Petrol",
+      "transmission": "Manual",
+      "body": "SUV",
+      "priceLakh": 5.5,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Service history available",
+        "E20 compliant",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/tata-punch/uppc3sc5/",
+      "overview": "The entry Pure trim with 6,389 km and, unusually for this list, a service history the dealer has flagged as available on request."
+    },
+    {
+      "id": "venue-2020",
+      "year": 2020,
+      "make": "Hyundai",
+      "model": "Venue",
+      "variant": "S 1.2 Petrol",
+      "km": 47027,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "SUV",
+      "priceLakh": 5.5,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Excellent condition",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/hyundai-venue/p03gue6o/",
+      "overview": "A compact SUV for city use, listed in excellent condition at the same figure as the Tata Punch."
+    },
+    {
+      "id": "polo-2017",
+      "year": 2017,
+      "make": "Volkswagen",
+      "model": "Polo",
+      "variant": "Comfortline 1.2L (P)",
+      "km": 23520,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "Hatchback",
+      "priceLakh": 3.5,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Less driven",
+        "Great Price",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/volkswagen-polo/uhg99vax/",
+      "overview": "Low mileage for its age and a keen asking price. A sensible first car or city runabout with the usual VW pedal feel."
+    },
+    {
+      "id": "ertiga-2014",
+      "year": 2014,
+      "make": "Maruti Suzuki",
+      "model": "Ertiga",
+      "variant": "VDi",
+      "km": 47131,
+      "fuel": "Diesel",
+      "transmission": null,
+      "body": "MUV",
+      "priceLakh": 4.5,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Excellent condition",
+        "Great Price",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/maruti-suzuki-ertiga/n8rrcp9g/",
+      "overview": "The only seven-seat diesel in the current collection. Note that Delhi-NCR registration rules for older diesels do not apply in Kolkata, but confirm the fitness certificate before you commit."
+    },
+    {
+      "id": "eeco-2012",
+      "year": 2012,
+      "make": "Maruti Suzuki",
+      "model": "Eeco",
+      "variant": "5 STR with A/C + HTR",
+      "km": 45123,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "MUV",
+      "priceLakh": 2.15,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Great Price",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/maruti-suzuki-eeco/s1zz657k/",
+      "overview": "Workhorse people-mover with rear air conditioning — priced for buyers who need seats rather than trim."
+    },
+    {
+      "id": "estilo-2011",
+      "year": 2011,
+      "make": "Maruti Suzuki",
+      "model": "Estilo",
+      "variant": "LXi BS-IV",
+      "km": 53748,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "Hatchback",
+      "priceLakh": 1.3,
+      "priceNote": "Lowest-priced car currently listed",
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/maruti-suzuki-estilo/58l8hi1o/",
+      "overview": "The cheapest entry on the list at ₹1.30 Lakh: tall gearbox, front power windows, manual air conditioning, BS-IV."
+    },
+    {
+      "id": "spark-2011",
+      "year": 2011,
+      "make": "Chevrolet",
+      "model": "Spark",
+      "variant": "LT 1.0",
+      "km": 30033,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "Hatchback",
+      "priceLakh": 1.35,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Excellent condition",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/chevrolet-spark/2ya7rp6t/",
+      "overview": "A low-mileage city car listed in excellent condition. Keep in mind that Chevrolet service support in Kolkata is now limited."
+    },
+    {
+      "id": "eon-2012",
+      "year": 2012,
+      "make": "Hyundai",
+      "model": "Eon",
+      "variant": "Era +",
+      "km": 40569,
+      "fuel": "Petrol",
+      "transmission": null,
+      "body": "Hatchback",
+      "priceLakh": 1.5,
+      "priceNote": null,
+      "reg": "Kolkata (WB)",
+      "location": "Beleghata / Garden Lane, Kolkata",
+      "highlights": [
+        "Excellent condition",
+        "Free home test drive"
+      ],
+      "listingUrl": "https://www.carwale.com/used/kolkata/hyundai-eon/dno4o7tx/",
+      "overview": "Basic, cheap to run and easy to park — the practical choice in this price band."
+    }
+  ]
+}
