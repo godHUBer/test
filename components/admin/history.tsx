@@ -1,0 +1,3 @@
+import {staffTime} from '@/lib/admin/format';
+import type {StockEvent} from '@/lib/admin/types';
+export function StockHistory({events}:{events:StockEvent[]}){return <section><h2>Stock register</h2><p>Most recent 50 entries. Historical imports do not invent entry dates; record creation is not a claim of physical arrival.</p>{!events.length?<p>No recorded stock events for this vehicle.</p>:<ol className="admin-history">{events.map(e=><li key={e.id}><time dateTime={e.at}>{staffTime(e.at)}</time> · {e.event_type} · {e.from_status??'new record'} → {e.to_status}<p>{e.reason||'No reason required for record creation.'}</p><small>Actor: {e.actor_id??'Trusted maintenance / unavailable'}</small></li>)}</ol>}</section>;}

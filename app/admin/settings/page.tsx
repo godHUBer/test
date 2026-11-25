@@ -1,0 +1,4 @@
+import {businessSession} from '@/lib/business/session';
+import {AdminFrame} from '@/components/admin/frame';
+import {SettingsForm} from '@/components/business/admin-forms';
+export default async function SettingsPage(){const s=await businessSession();if(!s)return <AdminFrame title="Business workflows setup pending"><p>Settings are not activated.</p></AdminFrame>;if(s.profile.role==='staff')return <AdminFrame title="Business settings"><p>Manager/owner with MFA required.</p></AdminFrame>;const result=await s.client.from('brand_settings').select('version,name,tagline,phone_display,phone_href,email,address_short,address_city,area,map_url,hours,services').eq('id',1).maybeSingle();return <AdminFrame title="Business settings">{result.error||!result.data?<p role="alert">Could not load the existing singleton. No new settings record is fabricated.</p>:<SettingsForm settings={result.data}/>}</AdminFrame>;}

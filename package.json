@@ -1,0 +1,50 @@
+{
+  "name": "sohan-automobile",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "prepare:site": "node scripts/prepare-site.mjs",
+    "predev": "npm run prepare:site",
+    "dev": "next dev --hostname 0.0.0.0",
+    "prebuild": "npm run prepare:site",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "typecheck": "next typegen && tsc --noEmit",
+    "lint": "eslint --no-warn-ignored app components lib tests *.ts *.mjs scripts",
+    "test": "tsx --test tests/unit/*.test.ts",
+    "test:e2e": "node scripts/run-e2e.mjs",
+    "baseline:check": "node scripts/baseline.mjs --check",
+    "check": "npm run baseline:check && npm run prepare:site && npm run typecheck && npm run lint && npm test && npm run test:db",
+    "pretest": "npm run prepare:site",
+    "test:db": "tsx --test tests/integration/*.test.ts",
+    "inventory:dry-run": "tsx scripts/inventory-dry-run.ts",
+    "inventory:reconcile": "tsx scripts/inventory-reconcile.ts",
+    "release:manifest": "tsx scripts/release-check.ts --manifest",
+    "release:check": "tsx scripts/release-check.ts"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.2",
+    "html-react-parser": "^6.1.10",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
+    "@electric-sql/pglite": "^0.6.0",
+    "@playwright/test": "^1.58.0",
+    "@sparticuz/chromium": "^143.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "16.4.6",
+    "tsx": "^4.0.0",
+    "typescript": "^5.9.0"
+  }
+}

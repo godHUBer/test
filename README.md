@@ -1,3 +1,22 @@
+# Sohan Automobile — application rebuild
+
+**Current stage: Phase 6 local hardening and launch-readiness tooling delivered; launch remains blocked.** Phases 2–5 are locally implemented with automated security, accessibility and end-to-end checks. Phase 6 adds baseline security headers, private-cache/credential checks, mobile long-text reflow, offline inventory/media reconciliation, a fail-closed release-evidence checker and recovery/staff-acceptance runbooks. The main preview is still an explicitly labelled **unverified snapshot** with online intake disabled. Verified restorable backups, real Supabase/native-concurrency checks, real staff/manual-accessibility acceptance and explicit launch/deferred-scope approval are outstanding. No remote Supabase resources, records, credentials, files or deployment have been changed.
+
+```sh
+npm ci
+npm run dev          # 0.0.0.0:3000; prepares shared assets automatically
+```
+
+Validation: `npm run check`, `npm run inventory:dry-run`, `npm run build`, `npm run test:e2e`, `npm audit --omit=dev`. `npm run release:manifest` records the candidate; `npm run release:check -- --evidence .local/release/evidence.json` deliberately fails until reviewed evidence and real runtime configuration are supplied. It neither deploys nor grants launch approval. See [operations/recovery](docs/operations-runbook.md) and [staff acceptance](docs/staff-acceptance.md).
+
+See [the rebuild plan](plan.md), [Phase 1 foundation](docs/phase-1-foundation.md), [Phase 2 security and activation gates](docs/phase-2-security.md), [Phase 3 public-site architecture/configuration](docs/phase-3-public-site.md), [Phase 4 stock/media workflow and limitations](docs/phase-4-stock-management.md), and [Phase 5 business workflows and activation gates](docs/phase-5-business-workflows.md), and [Phase 6 launch readiness](docs/phase-6-launch-readiness.md). Node.js 22+ is required; browser integration tests also use OpenSSL for an ephemeral local TLS fixture. No credentials are needed for the labelled preview or local tests. `npm run test:db` exercises isolated PostgreSQL/RLS scenarios; `npm run inventory:dry-run` validates legacy cars without remote import. `PUBLIC_INVENTORY_MODE=snapshot` is the safe default; invalid live-source settings never silently substitute snapshot cars. Do not apply the upgrade migration to an empty project or bypass the unresolved backup/security gates.
+
+---
+
+## Legacy static website documentation (retained)
+
+The following describes the original static implementation, not the new application architecture. Its external test-script references are historical, and the Python generator is known to fail under Python 3.11; it is not required to run the application.
+
 # Sohan Automobile — website
 
 A static, template-built marketing site for **Sohan Automobile**, a multi-brand new
