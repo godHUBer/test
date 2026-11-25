@@ -1,8 +1,14 @@
 'use client';
 import { useActionState } from 'react';
-import { inviteAction } from '@/lib/auth/invite';
+import { useSupabaseClient } from '@/lib/auth/client-session';
+import { inviteActionClient, type AuthState } from '@/lib/auth/client-invite';
+
 export function InviteForm() {
-  const [state, action, pending] = useActionState(inviteAction, {});
+  const client = useSupabaseClient();
+  const [state, action, pending] = useActionState<AuthState, FormData>(
+    (prev, form) => (client ? inviteActionClient(client, prev, form) : Promise.resolve({ error: 'Not configured.' })),
+    {},
+  );
   return <form className="form" action={action}>
     <div className="field"><label htmlFor="invite-email">Staff email to invite</label>
       <input name="email" id="invite-email" type="email" autoComplete="off" maxLength={254} required /></div>

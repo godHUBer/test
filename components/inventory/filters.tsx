@@ -1,10 +1,11 @@
 'use client';
 import type { Filters } from '@/lib/inventory/query';
 import { budgets,filterHref } from '@/lib/inventory/query';
+import { href } from '@/lib/deploy';
 interface Facets { makes:string[];bodies:string[];fuels:string[];years:number[];transmissions:string[] }
 export function InventoryFilters({filters:f,facets}:{filters:Filters;facets:Facets}){
   const select=(name:keyof Filters,label:string,values:{value:string;label:string}[])=> <div className="field"><label htmlFor={`f-${name}`}>{label}</label><select id={`f-${name}`} name={name} defaultValue={String(f[name])} onChange={e=>e.currentTarget.form?.requestSubmit()}><option value="">Any {label.toLowerCase()}</option>{f[name] && !values.some(v=>v.value===String(f[name])) && <option value={String(f[name])}>{String(f[name])} (no current records)</option>}{values.map(v=><option key={v.value} value={v.value}>{v.label}</option>)}</select></div>;
-  return <form className="filters" action="/inventory" method="get" aria-label="Filter and sort the collection">
+  return <form className="filters" action={href("/inventory")} method="get" aria-label="Filter and sort the collection">
     {select('make','Manufacturer',facets.makes.map(v=>({value:v,label:v})))}
     {select('budget','Budget',Object.entries(budgets).map(([value,b])=>({value,label:b.label})))}
     {select('year','Year from',facets.years.map(v=>({value:String(v),label:String(v)})))}

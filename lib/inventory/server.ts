@@ -31,6 +31,18 @@ const cachedListing=cache(async(site:PublicSite,key:string)=>{
   try { return await readListing(publicClient(config),config.url,filters); } catch { return null; }
 });
 export function loadListing(site:PublicSite,filters:Filters){return cachedListing(site,JSON.stringify(filters));}
+/** All public vehicle IDs (any published status) for static prerendering. */
+export const loadAllVehicleIds=cache(async ():Promise<string[]>=>{
+  const config=inventoryConfig();
+  if(config.mode==='error')return [];
+  if(config.mode==='snapshot')return snapshotVehicles.map(c=>c.id);
+  try{
+    const client=publicClient(config);
+    const result=await client.from('cars').select('id').in('status',['available','reserved','sold']);
+    if(result.error||!Array.isArray(result.data))return [];
+    return result.data.map((row)=>String(row.id)).filter((id)=>validSlug(id));
+  }catch{return [];}
+});
 export const loadPublicVehicle=cache(async (id:string):Promise<{state:'found';vehicle:Vehicle}|{state:'missing'}|{state:'error'}>=>{
   if(!validSlug(id)) return {state:'missing'};
   const config=inventoryConfig();

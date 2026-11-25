@@ -1,6 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
 import { siteRoutes } from '../../lib/routes';
 
 for (const width of [320, 390, 768, 1440]) {
@@ -88,32 +86,18 @@ test('mobile menu traps focus and returns it on Escape', async ({ page }) => {
   await expect(open).toHaveAttribute('aria-expanded', 'false');
 });
 
-test('capture legacy and application baseline screenshots for each page family', async ({ page, context }, info) => {
-  // Interception serves only local baseline files. No outbound legacy.test traffic.
-  const legacy = await context.newPage();
-  await legacy.route('http://legacy.test/**', async route => {
-    const pathname = decodeURIComponent(new URL(route.request().url()).pathname);
-    const file = resolve(process.cwd(), '.' + pathname);
-    if (!file.startsWith(process.cwd() + '/')) return route.abort();
-    const body = await readFile(file);
-    const contentType = file.endsWith('.html') ? 'text/html' : file.endsWith('.woff2') ? 'font/woff2' : file.endsWith('.jpg') ? 'image/jpeg' : 'image/png';
-    await route.fulfill({ body, contentType });
-  });
+test('capture application baseline screenshots for each page family', async ({ page }, info) => {
+  // The legacy static HTML has been removed; capture the rebuilt Next.js app
+  // baseline for each page family at desktop and mobile widths.
   for (const width of [390, 1440]) {
     for (const item of [...siteRoutes.slice(0, 7), siteRoutes.find(p => p.route === '/cars/xl6-2025')!]) {
-      const name = item.source.replace('.html', '');
-      for (const [label, target, url] of [
-        ['legacy', legacy, `http://legacy.test/${item.source}`],
-        ['app', page, item.route],
-      ] as const) {
-        await target.setViewportSize({ width, height: 960 });
-        await target.goto(url);
-        await target.evaluate(() => document.fonts.ready);
-        await target.screenshot({ path: info.outputPath(`${name}-${width}-${label}.png`), animations: 'disabled' });
-      }
+      const name = item.route.replace(/^\//, '').replace(/[/]/g, '-') || 'index';
+      await page.setViewportSize({ width, height: 960 });
+      await page.goto(item.route);
+      await page.evaluate(() => document.fonts.ready);
+      await page.screenshot({ path: info.outputPath(`${name}-${width}-app.png`), animations: 'disabled' });
     }
   }
-  await legacy.close();
 });
 
 
