@@ -2,6 +2,7 @@
 
 import Script from 'next/script';
 import { useEffect } from 'react';
+import { basePath } from '@/lib/deploy';
 
 export function SiteEnhancements() {
   useEffect(() => {
@@ -68,5 +69,5 @@ export function SiteEnhancements() {
       document.body.classList.remove('is-locked');
     };
   }, []);
-  return <Script src="/site.js" strategy="afterInteractive" />;
+  return <Script src={basePath ? `/${basePath}/site.js` : '/site.js'} strategy="afterInteractive" />;
 }

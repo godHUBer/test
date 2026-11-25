@@ -5,10 +5,9 @@ const args=process.argv.slice(2),manifestOnly=args.length===1&&args[0]==='--mani
 if(!manifestOnly&&(args.length!==2||args[0]!=='--evidence')){console.error('Usage: npm run release:manifest OR npm run release:check -- --evidence .local/release/evidence.json');process.exit(2);}
 // Candidate identity covers first-party application, SQL, scripts, tests, docs and dependency/config sources.
 // Never scan .env, node_modules, generated output, local evidence, backups or credentials.
-const roots=['app','components','lib','scripts','supabase','tests','docs','.github','assets','src'];
+const roots=['app','components','lib','scripts','supabase','tests','docs','.github','assets'];
 const files=['package.json','package-lock.json','next.config.ts','playwright.config.ts','proxy.ts','tsconfig.json','eslint.config.mjs','README.md','plan.md','.env.example','.gitignore'];
 function walk(dir:string){for(const file of readdirSync(dir,{withFileTypes:true})){const path=dir+'/'+file.name;if(file.isSymbolicLink())throw new Error('Release sources may not be symlinks');if(file.isDirectory())walk(path);else if(file.isFile())files.push(path);}}
-files.push('build.py',...readdirSync('.').filter(path=>path.endsWith('.html')));
 for(const root of roots){if(lstatSync(root).isSymbolicLink())throw new Error('Release roots may not be symlinks');walk(root);}
 for(const file of files)if(lstatSync(file).isSymbolicLink())throw new Error('Release sources may not be symlinks');
 const releaseDigest=sha256(files.sort().map(path=>path+'\0'+sha256(readFileSync(path))).join('\n'));

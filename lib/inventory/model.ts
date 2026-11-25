@@ -1,5 +1,7 @@
 import inventory from '../../assets/data/inventory.json';
 import { lakhToRupees } from '../format';
+import { asset, absoluteOrigin } from '@/lib/deploy';
+export { absoluteOrigin };
 
 export type PublicStatus = 'available' | 'reserved' | 'sold';
 export interface Vehicle {
@@ -22,10 +24,6 @@ export const vehicleName = (car: Vehicle) => `${car.year} ${car.make} ${car.mode
 export const formatPrice = (rupees: number) => `₹ ${(rupees / 100000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 5 })} Lakh`;
 export const formatKm = (km: number) => `${km.toLocaleString('en-IN')} km`;
 export const gearbox = (value: string | null) => value?.split(' ')[0] ?? 'unlisted';
-export function absoluteOrigin(value: string | undefined): string | null {
-  if (!value) return null;
-  try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password && url.pathname === '/' && !url.search && !url.hash ? url.origin : null; } catch { return null; }
-}
 export function safeUrl(value: unknown): string | null {
   if (typeof value !== 'string') return null;
   try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password ? url.href : null; } catch { return null; }
@@ -33,7 +31,7 @@ export function safeUrl(value: unknown): string | null {
 export function publicImage(value: unknown, projectOrigin?: string): string | null {
   if (typeof value !== 'string' || !value || value.length > 2000) return null;
   const local = value.startsWith('assets/') ? '/' + value : value;
-  if (/^\/assets\/img\/[a-zA-Z0-9/_-]+\.(jpg|jpeg|png|webp)$/i.test(local)) return local;
+  if (/^\/assets\/img\/[a-zA-Z0-9/_-]+\.(jpg|jpeg|png|webp)$/i.test(local)) return asset(local);
   if (!projectOrigin) return null;
   if (value.startsWith('https://')) {
     const url = safeUrl(value);

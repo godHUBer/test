@@ -1,0 +1,76 @@
+name: Build and deploy
+
+# Builds the Next.js app as a static export and deploys it to GitHub Pages.
+#
+# Approach B: the public pages (listing, car detail, editorial, services) are
+# prerendered to static HTML at build time for SEO, while admin/auth are fully
+# client-rendered against Supabase RPCs/Edge Functions. No Node runtime runs at
+# request time, so GitHub Pages (static file hosting) is sufficient — the same
+# model Scratchpad uses.
+#
+# The app is served under the GitHub Pages project path /<repo>/, so
+# NEXT_PUBLIC_BASE_PATH is set to the repo name and SITE_URL to the Pages origin.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      PUBLIC_INVENTORY_MODE: 'supabase'
+      SITE_URL: ${{ secrets.SITE_URL }}
+      NEXT_PUBLIC_BASE_PATH: ${{ vars.PAGES_BASE_PATH }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      MEDIA_STORAGE_SECRET_KEY: ${{ secrets.MEDIA_STORAGE_SECRET_KEY }}
+      BUSINESS_INTAKE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Static and security checks
+        run: npm run check
+
+      - name: Legacy inventory dry-run (read-only)
+        run: npm run inventory:dry-run
+
+      - name: Production build (static export)
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

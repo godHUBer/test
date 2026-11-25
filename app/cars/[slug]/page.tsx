@@ -1,13 +1,16 @@
 import type {Metadata} from 'next';
 import {notFound} from 'next/navigation';
-import {loadPublicSite,loadPublicVehicle} from '@/lib/inventory/server';
+import {loadPublicSite,loadPublicVehicle,loadAllVehicleIds} from '@/lib/inventory/server';
 import {absoluteOrigin,vehicleName} from '@/lib/inventory/model';
 import {publicMetadata,vehicleSchema,serialiseSchema} from '@/lib/inventory/seo';
 import {PublicShell} from '@/components/public-shell';
 import {VehicleDetail} from '@/components/inventory/detail-page';
 import {EmptyState} from '@/components/inventory/shared';
-export const dynamic='force-dynamic';
 type Props={params:Promise<{slug:string}>};
+export async function generateStaticParams(){
+  const ids=await loadAllVehicleIds();
+  return ids.map((id)=>({slug:id}));
+}
 export async function generateMetadata({params}:Props):Promise<Metadata>{
   const {slug}=await params;const [site,record]=await Promise.all([loadPublicSite(),loadPublicVehicle(slug)]);
   if(record.state!=='found')return{title:record.state==='error'?'Vehicle temporarily unavailable':'Vehicle not found',robots:{index:false,follow:false}};

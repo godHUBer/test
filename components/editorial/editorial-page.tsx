@@ -8,6 +8,7 @@ import {inventoryFacts} from '@/lib/inventory/query';
 import {formatPrice,formatKm,vehicleName,type Brand} from '@/lib/inventory/model';
 import {FeaturedCar,VehicleCard,EmptyState} from '@/components/inventory/shared';
 import {VehicleImage} from '@/components/inventory/vehicle-image';
+import { href, asset } from '@/lib/deploy';
 
 const gaps:Record<string,string>={
   warranty:'The dealership does not publish a warranty programme', inspection:'No standard independent inspection certificate is published',
@@ -33,7 +34,7 @@ export function EditorialPage({route,site}:{route:string;site:PublicSite}){
   };
   function resolveToken(token:string):ReactNode {
     if(Object.hasOwn(values,token))return values[token];
-    if(token==='HERO_IMAGE'||token.startsWith('IMG:'))return <VehicleImage src="/assets/img/hero-vehicle.jpg" alt="Archive photograph from the dealership forecourt; not a current stock listing" width={1680} height={940} eager={token==='HERO_IMAGE'}/>;
+    if(token==='HERO_IMAGE'||token.startsWith('IMG:'))return <VehicleImage src={asset("/assets/img/hero-vehicle.jpg")} alt="Archive photograph from the dealership forecourt; not a current stock listing" width={1680} height={940} eager={token==='HERO_IMAGE'}/>;
     if(token==='CONTACT_GRID')return <ContactGrid brand={b}/>;
     if(token==='CAR_CARDS:FEATURED')return featured?<FeaturedCar car={featured} snapshot={preview}/>:stockUnavailable();
     if(token==='CAR_CARDS:GRID')return <>{ordered.filter(c=>c.id!==featured?.id).slice(0,6).map(c=><VehicleCard key={c.id} car={c} snapshot={preview}/>)}</>;
@@ -54,6 +55,7 @@ export function EditorialPage({route,site}:{route:string;site:PublicSite}){
         if(!Object.hasOwn(values,token))throw new Error(`Unsupported attribute token: ${token}`);return values[token];
       });
     }
+    for(const [k,v] of Object.entries(node.attribs)){if((k==='href'||k==='src')&&v.startsWith('/')&&!v.startsWith('//'))node.attribs[k]=href(v);}
     const cls=node.attribs.class??'';const content=textContent(node);
     if(intake&&node.name==='form'&&node.attribs['data-mailto']&&(route==='/contact'||route==='/sell-your-car'))return <PublicIntake source={route==='/contact'?'contact':'sell'} kind={route==='/contact'?'general':'sell'} cars={cars.map(c=>({id:c.id,label:vehicleName(c)}))}/>;
     if(intake&&route!=='/legal'&&node.name==='p'&&(content.includes('compose an email')||content.includes('composes an email')||content.includes('mail app')||content.includes('nothing is stored')||content.includes('do not transmit data')))return <p>Enabled online forms store your contact details, request and consent notice version for authorised dealership staff to respond. A stored reference is shown only after a confirmed database write. Requests are not confirmed appointments and no automatic notification is promised. Phone/email remain alternatives.</p>;
@@ -64,7 +66,7 @@ export function EditorialPage({route,site}:{route:string;site:PublicSite}){
     if(cls==='hero__credit')return <p className="hero__credit">Archive forecourt photograph · browse listings for current records</p>;
     if(cls.includes('hero__foot'))return <div className="hero__foot tnum"><span>{site.mode==='error'?'Inventory unavailable':`${cars.length} ${preview?'preview records':'available listings'}`}</span><span>Since {b.established}</span><span>{b.area}</span><a href={`tel:${b.phoneHref}`}>{b.phoneDisplay}</a></div>;
     if(cls==='collection-foot')return <div className="collection-foot"><dl className="mini-facts tnum"><div><dt>{preview?'Preview records':'Available listings'}</dt><dd>{site.mode==='error'?'Unavailable':cars.length}</dd></div><div><dt>Asking price range</dt><dd>{facts.min===null?'Not published':`${formatPrice(facts.min)} – ${formatPrice(facts.max!)}`}</dd></div><div><dt>Brands</dt><dd>{facts.makes.join(', ')||'Not published'}</dd></div></dl><div className="notes"><h4>Before you travel</h4><p>Call to confirm the car, price, documents and a viewing time. The total physical forecourt stock is not inferred from public listings.</p></div></div>;
-    if(cls==='why-split__media')return <div className="why-split__media"><VehicleImage src="/assets/img/hero-vehicle.jpg" alt="Archive dealership forecourt photograph"/><span className="why-split__cap">Archive dealership photograph — not a statement of current stock</span></div>;
+    if(cls==='why-split__media')return <div className="why-split__media"><VehicleImage src={asset("/assets/img/hero-vehicle.jpg")} alt="Archive dealership forecourt photograph"/><span className="why-split__cap">Archive dealership photograph — not a statement of current stock</span></div>;
     if(node.name==='p'&&content.includes('{{FLOOR}}'))return <p>The public collection shows {site.mode==='error'?'an inventory read error':`${cars.length} ${preview?'snapshot records':'available records'}`}. Physical forecourt stock may differ. Phone the showroom to confirm availability; there is no managed total-floor count yet.</p>;
     if(node.name==='li'&&content.includes('Specifications')&&content.includes('{{VERIFIED}}'))return <li><b>Specifications</b> come from dealership records. Unknown values are labelled, and a record edit is not an inspection.</li>;
     if(node.name==='p'&&content.includes('Every specification, photograph and price on this site is taken'))return <p>{preview?`This preview uses the legacy listing snapshot dated ${b.verifiedOn}.`:'Vehicle records are read from the dealership database on request.'} Source URLs on individual listings are provenance links, not a guarantee that an external directory remains current.</p>;

@@ -1,5 +1,6 @@
 import type { Vehicle } from './model';
 import { gearbox } from './transmission';
+import { href } from '@/lib/deploy';
 export type QueryInput = Record<string, string | string[] | undefined>;
 export const PAGE_SIZE = 12;
 export const budgets = {
@@ -39,7 +40,7 @@ export function filterHref(filters: Filters, changes: Partial<Filters> = {}) {
   const values = { ...filters, ...changes };
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(values)) if (value && value !== 'featured' && !(key === 'page' && value === 1)) search.set(key,String(value));
-  return '/inventory' + (search.size ? '?' + search.toString() : '');
+  return href('/inventory') + (search.size ? '?' + search.toString() : '');
 }
 export function inventoryFacts(cars: Vehicle[]) {
   const available = cars.filter(c => c.status === 'available');
