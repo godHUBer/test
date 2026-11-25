@@ -1,0 +1,1 @@
+export function staffTime(value:string){const date=new Date(value);return Number.isNaN(date.getTime())?'Timestamp unavailable':new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'}).format(date)+' IST';}

@@ -1,0 +1,34 @@
+/* Application-only accessibility corrections; legacy design source stays intact. */
+.sheet { overflow-y: auto; }
+.sheet__top, .sheet__foot { flex-shrink: 0; }
+/* Live public components: retain the original design tokens and responsive geometry. */
+.source-notice { padding: 12px 0; background: var(--panel); border-bottom: 1px solid var(--line); color: var(--ink-2); font-size: .85rem; }
+.source-notice strong { color: var(--accent); }
+.source-notice--error { border-color: #a7654c; }
+.source-notice--error strong { color: #ffbd9e; }
+.image-unavailable { display: grid; place-content: center; min-height: 120px; height: 100%; padding: 22px; background: var(--surface-2); color: var(--ink-2); text-align: center; }
+.veh__media > .image-unavailable, .veh-hero__media > .image-unavailable { min-height: 100%; }
+.pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 18px; margin: 28px 0 44px; }
+.chip[aria-current="true"] { background: var(--brand); color: var(--void); }
+dialog.lightbox { margin: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; border: 0; color: var(--ink); }
+.gallery__stage > .image-unavailable { position: absolute; inset: 0; }
+main, .veh__body, .field { min-width: 0; }
+.form input, .form select { max-width: 100%; }
+.gallery__stage > .image-unavailable { opacity: 0; }
+.gallery__stage > .image-unavailable.is-shown { opacity: 1; }
+/* The fixed home nav must not cover the source/availability notice. */
+[data-nav="overlay"] .nav--overlay:not(.is-stuck) ~ .source-notice { margin-top: 72px; }
+.admin-nav {display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:28px;}
+.admin-fieldset {border:1px solid var(--line);padding:20px;display:grid;gap:18px;min-width:0;}
+.admin-fieldset legend {padding:0 8px;color:var(--accent);}
+.admin-fieldset:disabled {opacity:.65;}
+.admin-error {padding:12px;border-left:3px solid #ffbd9e;}
+.admin-metrics {display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;}
+.admin-metrics div {border:1px solid var(--line);padding:16px;}.admin-metrics dd {margin:0;font-size:2rem;}
+.admin-table-wrap {overflow:auto;}.admin-table {width:100%;border-collapse:collapse;text-align:left;}.admin-table th,.admin-table td {padding:12px;border-bottom:1px solid var(--line);}.admin-table small {display:block;}
+.admin-media-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px;}.admin-media-grid img {width:100%;height:auto;object-fit:contain;}
+.admin-photo-choice {display:block;padding:8px 0;}.admin-history {display:grid;gap:20px;}.admin-history li {border-bottom:1px solid var(--line);padding:12px;overflow-wrap:anywhere;}.admin-history pre {white-space:pre-wrap;max-width:100%;}
+.intake-trap {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}
+input[type="datetime-local"],input[type="date"] {max-width:100%;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);padding:10px;}
+/* Long stored references and untrusted plain-text input must reflow rather than widen mobile pages. */
+.intake-form, .admin-workspace {overflow-wrap:anywhere;}

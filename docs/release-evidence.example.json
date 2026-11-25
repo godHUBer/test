@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "projectRef": "vxlxoiycolfojcnhnzfr",
+  "releaseDigest": "",
+  "gates": {
+    "backup_restore": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""},
+    "real_supabase_security": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""},
+    "native_concurrency": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""},
+    "import_reconciliation": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""},
+    "staff_acceptance": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""},
+    "privacy_retention": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""},
+    "deployment_tls": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""},
+    "monitoring_recovery": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""},
+    "launch_approval": {"status":"pending","artifact":"","sha256":"","reviewedBy":"","reviewedAt":""}
+  }
+}

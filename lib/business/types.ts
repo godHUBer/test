@@ -1,0 +1,4 @@
+export interface RequestRecord {id:string;reference:string;kind:string;vehicle_id:string|null;service_id:string|null;contact_name:string;phone:string;email:string|null;message:string;seller_details:Record<string,string>;customer_vehicle:string|null;source:string;consent_version:string;consented_at:string;status:string;assigned_to:string|null;follow_up_at:string|null;version:number;created_at:string;updated_at:string}
+export interface Viewing {id:string;request_id:string;vehicle_id:string;assigned_to:string;starts_at:string;ends_at:string;status:string;version:number}
+export interface ServiceJob {id:string;request_id:string;service_id:string;status:string;starts_at:string|null;ends_at:string|null;version:number}
+export interface Service {id:string;name:string;description:string;active:boolean;sort_order:number;version:number}

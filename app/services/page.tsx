@@ -1,0 +1,8 @@
+import {PublicShell} from '@/components/public-shell';
+import {loadPublicSite} from '@/lib/inventory/server';
+import {publicServices} from '@/lib/business/catalogue';
+import {PublicIntake} from '@/components/business/public-intake';
+import {publicMetadata} from '@/lib/inventory/seo';
+export const dynamic='force-dynamic';
+export async function generateMetadata(){return publicMetadata(await loadPublicSite(),'/services','Services and service requests','Ask the dealership about vehicle servicing, repairs and support. Scheduling is subject to staff confirmation.');}
+export default async function ServicesPage(){const [site,services]=await Promise.all([loadPublicSite(),publicServices()]);return <PublicShell route="/services" site={site}><main id="main" className="band"><div className="wrap"><p className="kicker">Dealership services</p><h1>Care for your vehicle.</h1><p className="lede">Basic service requests and scheduling—not a full workshop ERP. Your vehicle need not be listed for sale.</p>{services===null?<p>Online service catalogue is unavailable or not activated. Call {site.brand.phoneDisplay} to ask about the dealership’s advertised services: {site.brand.services.join(' · ')}.</p>:!services.length?<p>No online-requestable services have been published. Please call the showroom.</p>:<><div className="veh-grid veh-grid--3">{services.map(s=><article className="notes" key={s.id}><h2>{s.name}</h2><p>{s.description}</p></article>)}</div><section className="band--sm"><h2>Request service</h2><PublicIntake source="services" kind="service" services={services}/><p>Online intake may be disabled. Call {site.brand.phoneDisplay} if no request form is shown. No appointment is confirmed by this page.</p></section></>}</div></main></PublicShell>;}

@@ -1,0 +1,16 @@
+node_modules/
+.next/
+.generated/
+public/assets/
+public/site.css
+public/site.js
+.env*
+!.env.example
+playwright-report/
+test-results/
+*.tsbuildinfo
+__pycache__/
+# Never put database/media backups or local credentials into the patchset.
+.local/
+backups/
+*.dump

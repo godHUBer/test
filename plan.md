@@ -1,8 +1,8 @@
 # Sohan Automobile — Live Website & Admin System Rebuild Plan
 
 **Prepared:** 24 November 2026  
-**Status:** Proposal only — implementation requires approval.  
-**Scope of this change:** Create this document only. Do not modify the website, inventory, build scripts, dependencies, deployment, or Supabase resources.
+**Status:** Phases 0 and 1 complete. Phases 2–5 and Phase 6 local hardening/tooling pass local verification; the Phase 6 launch exit condition is not met. Real-project activation remains blocked on verified recovery readiness, compatibility/configuration/privacy/scope review and real Supabase/native-concurrency/staff acceptance checks.
+**Current scope:** Versioned staff inventory RPCs/UI, lifecycle/history, protected notes, sanitised private-to-public media workflow and synthetic end-to-end tests. No remote migrations, Auth changes, invitations, selected-project data connection/import/upload, persistent enquiry storage or production deployment.
 
 ## 1. Objective
 
@@ -365,4 +365,251 @@ Online payments/deposits, customer self-service accounts, automated lender/insur
 
 ---
 
-**Current execution boundary:** This turn delivers only `plan.md`. It does not authorise creating Supabase resources, running migrations, inviting users, installing dependencies, altering site behaviour, deploying or changing the current inventory.
+**Original planning delivery:** Only `plan.md` was added. No Supabase resources, website behaviour or inventory were changed.
+
+## 15. Phase 0 decision register
+
+**Recorded:** 24 November 2026, from the user's approval selections.
+
+| Decision | Status / approved choice |
+| --- | --- |
+| Architecture and visual scope | Approved: Next.js + TypeScript + Supabase; preserve the existing public design |
+| Core release scope | Approved: live inventory, staff access, persistent enquiries, logs and basic service management |
+| Database strategy | Approved: existing `sohan-automobile` project (`vxlxoiycolfojcnhnzfr`), confirmed by the user as not in production |
+| Permissions | Approved: owner controls accounts, managers publish/mark sold, staff prepare drafts and manage assigned leads/services |
+| Sold vehicles | Approved: remove from active stock, keep a sold public detail page and private history |
+| Entry logs | Approved: vehicle stock register plus administrative audit history; physical visitor register is not included |
+| Services | Approved: requests, scheduling and status overview; full workshop ERP excluded |
+
+### Read-only project discovery
+
+The Supabase connector listed one accessible project:
+
+- **Name:** `sohan-automobile`
+- **Project reference:** `vxlxoiycolfojcnhnzfr`
+- **Region:** `ap-south-1`
+- **Reported status:** `ACTIVE_HEALTHY`
+
+The user selected this project and confirmed it is **not in production**. Following that selection, read-only migration and schema/policy/constraint/trigger metadata was inspected. No customer, inventory or account rows, secret values or Auth configuration were read. No remote resources or settings were changed.
+
+### Existing database findings and Phase 2 implications
+
+This is **not an empty database**. Six migration entries already exist:
+
+1. `20261124110715` — `create_admin_profiles_and_role_helpers`
+2. `20261124110731` — `create_cars_table`
+3. `20261124110740` — `create_brand_settings_singleton`
+4. `20261124110816` — `create_activity_log_audit_and_storage`
+5. `20261124110941` — `fix_log_activity_operator_precedence`
+6. `20261124115741` — `public_read_includes_reserved_and_sold`
+
+Observed public tables: `admin_profiles`, `cars`, `brand_settings`, and `activity_log`. All four have RLS enabled. Metadata also shows car-photo policies on `storage.objects`, audit triggers on the three business tables, and updated-at triggers on cars/settings. These observations are not a security certification: function bodies, grants, storage bucket configuration, auth settings and effective API behaviour still need review/testing in Phase 2.
+
+| Existing implementation | Difference from approved target / required follow-up |
+| --- | --- |
+| `admin_profiles` role constraint allows `owner`, `editor`, `pending`; no active-state column observed | Reconcile roles with owner/manager/staff and deactivation. Do not assume `editor` maps to manager or silently change existing accounts. Review role-helper implementations and last-owner protection. |
+| `cars` uses a text primary key, numeric `price_lakh`, inline highlight/gallery arrays and statuses `available`, `reserved`, `sold`, `hidden` | Decide whether to extend in place or migrate through compatibility views/adapters. Preserve IDs, exact numeric values and media references; explicitly map `hidden` only after confirming its meaning. Numeric lakh storage is not inherently imprecise; any conversion to integer rupees requires exact validation. |
+| Public car SELECT policy includes available, reserved and sold rows | Active inventory queries must explicitly filter sale stock; sold details require their own public handling. Review column grants/projections before adding internal fields. |
+| Authenticated management policies use `is_admin()` and generally permit ALL operations | Inspect helper functions and effective grants; enforce approved publishing/sale/deletion capabilities at trusted boundaries, not just in the UI. |
+| `activity_log` has actor/action/entity/changes metadata and business-row audit triggers | Reuse or adapt after reviewing redaction, append-only grants, function privileges, transaction behaviour and actor attribution. Trigger existence alone does not establish complete or safe logging. |
+| `car-photos` object policies permit public reads and admin writes | Confirm bucket configuration and upload validation; separate draft/private media before supporting uploads. |
+| No lead, appointment or service tables were found in the public schema | Plan additive business-workflow migrations after the compatibility review. This inspection does not rule out objects in other schemas. |
+
+**Migration safety requirement:** Treat Section 6 table names as the proposed logical model, not instructions to create a parallel conflicting schema. Phase 2 must inventory grants/functions/indexes and storage settings, back up existing data/media, and present a non-destructive compatibility/migration strategy before remote writes. Do not reset the project, drop existing objects, replay its six existing migrations, or overwrite records merely because it is non-production. Existing row counts and contents are intentionally unverified in Phase 0.
+
+### Remaining gates
+
+- Project selection and Phase 0 approval do not authorise migrations or settings changes.
+- Resolve existing-schema compatibility and perform permission tests before Phase 2 remote implementation; use the findings above as inputs, not a reason to bypass review.
+- First-owner identity, staff roster, data retention/export rules, legal approval, current vehicle availability/year semantics, hours, hosting/domain and notification requirements remain pending at their corresponding implementation or launch gates.
+- At Phase 0 close, Phase 1 had not started. The subsequent user instruction “phase 1” authorised the foundation work documented below, not every later phase.
+
+**Phase 0 execution boundary (historical):** Documentation and read-only discovery only; no resource changes or implementation occurred in that phase.
+
+## 16. Phase 1 completion record
+
+**Authorisation:** User requested “phase 1”.
+**Implementation:** Added Next.js App Router, React and strict TypeScript; reproducible npm lockfile; shared navigation/footer/page/status components; clean routes and permanent redirects for all 22 legacy pages; shared static assets; environment placeholders; error/404 handling; a noindex admin setup placeholder; in-repository checks and CI.
+
+### Parity strategy and explicit limits
+
+- A build-time compatibility adapter extracts trusted markup from the checked-in legacy HTML. This preserves the current appearance without executing or modifying the Python generator. This is a temporary scaffold, not the final data-driven implementation.
+- All 111 legacy HTML/template/asset/build files remain unchanged, verified by the versioned SHA-256 baseline manifest. The root README now distinguishes application setup from retained historical documentation.
+- Inventory remains the dated static snapshot, and forms remain honest mailto composers. No Supabase client, credential retrieval, database write, authentication flow or fake admin control has been introduced.
+- The application owns the mobile-menu lifecycle and focus trap, including reliable initial focus after its visibility transition and scrolling on short screens. Only the generated copy's legacy menu bootstrap is disabled to prevent duplicate handlers; the original script is intact.
+- The legal page no longer falsely marks About as the active navigation item. This does not replace the legal/privacy review required before persistent forms/authentication launch.
+- Existing database schema reconciliation remains mandatory before Phase 2 migrations. No remote Supabase calls or changes were needed for Phase 1.
+
+### Verification performed
+
+- `npm run check`: legacy baseline intact (111 files), asset preparation, generated Next route types, strict type-check, ESLint and all **3 unit tests passed**.
+- `npm run build`: production build successful, including all **22 public routes**, error/404 handling and the admin placeholder.
+- `npm run test:e2e`: all **9 browser tests passed**, including 88 public page/viewport checks across 320/390/768/1440 px, media decoding, no horizontal overflow or uncaught browser errors, 22 query-preserving redirects, 404s, filter/gallery/form validation, mobile focus handling and no-JavaScript inventory content.
+- Mobile focus handling also passed three repeated targeted runs after fixing an initial-focus timing issue.
+- Paired baseline/application screenshots captured for eight page families at two widths (32 viewport screenshots). These are generated review artefacts, not a claimed pixel-perfect regression gate or full accessibility audit.
+- `npm audit --omit=dev`: zero reported production dependency vulnerabilities at verification time.
+- CI workflow added; remote execution is not asserted until GitHub runs it.
+- Local foundation preview started on `0.0.0.0:3000`; this is not a production deployment.
+
+Setup, bridge-removal guidance, browser-runtime requirements and limitations are documented in [docs/phase-1-foundation.md](docs/phase-1-foundation.md).
+
+**Next gate:** Phase 2 — inspect remaining existing function/grant/storage metadata, agree a non-destructive schema/role migration strategy, and implement/test database security and staff authentication. Do not apply remote migrations or change existing project settings without the relevant approval.
+
+## 17. Phase 2 local delivery and activation gate
+
+**Authorisation:** User requested “phase 2” and then “continue”. Remote review remained read-only; the compatibility strategy must be approved before migrations.
+**Current outcome:** Local implementation and verification completed. **Phase 2 is not complete end to end:** the upgrade has not been applied, staff Auth has not been configured, and real Supabase API/provider integration has not been exercised.
+
+### Implemented locally
+
+- Request-scoped Supabase SSR sessions, HTTP-only secure cookies, refresh proxy and private/no-store/no-referrer staff/auth routes.
+- Staff sign-in, password recovery/setup, explicit invitation/recovery confirmation, TOTP enrolment/verification, sign-out and owner-controlled access/invitation code.
+- Fresh database role/active checks, MFA for owner/manager, recent MFA for access administration, and a schema contract marker that blocks the app against the un-upgraded database.
+- An in-place upgrade migration preserving existing text IDs, exact numeric lakh prices, photographs, existing status values, account rows and audit history. No existing editor is implicitly promoted.
+- Least-privilege grants and RLS, draft-only staff edits, versioned manager status transitions, transactional stock-event/audit records, last-owner protection and private draft-media policies. Anonymous/authenticated table truncation and browser-supplied auth-event writes are revoked by the proposed migration, **not yet in the connected project**.
+- Local-only PostgreSQL fixture/security tests and a dry-run inventory validator. No synthetic identities, seed rows or imports were sent to Supabase.
+- Application-only legal disclosure distinguishes essential staff authentication cookies from public browsing and mailto enquiry forms. The 111 legacy baseline files remain intact.
+
+### Read-only review additions
+
+Reviewed existing helper/audit function bodies, Auth user trigger, table/routine grants, schema/sequence/column ACLs, indexes and bucket settings. Found broad browser table/sequence privileges, a caller-supplied auth-event function and unrestricted public photo upload metadata. No column-specific ACLs or PUBLIC table grants were returned; browser roles have schema usage, not schema creation privileges in the observed metadata. These are observations, not a completed production security audit.
+
+The private upgrade refuses unexpected policy or column-grant drift. Existing `car-photos` files remain publicly readable; the proposal disables browser writes there and introduces private drafts. No bucket properties, files or remote grants have changed yet.
+
+### Verification performed
+
+- `npm run check`: baseline intact, generated route types, TypeScript, lint, **7 unit tests**, and **11 PostgreSQL test results** (including the grouped parent result; nine security scenarios plus a separate drift-abort scenario) passed.
+- Database tests used isolated PGlite with actual PostgreSQL roles/RLS/PL/pgSQL, not the connected database. They exercise role/MFA denial, audit forgery/truncation denial, transactional rollback, last-owner rules, stale-version rejection, immediate role deactivation and private storage metadata policies.
+- `npm run inventory:dry-run`: all **15** legacy vehicles validated; **10** unknown transmissions retained; no remote comparisons/imports or publication performed.
+- `npm run build`: production compilation successful with 22 public compatibility pages and dynamic staff/auth routes.
+- `npm run test:e2e`: all **10 browser tests** passed, retaining 88 public page/viewport checks and adding unconfigured-auth denial, no credentials accepted, cache/robots/referrer headers and safe callback behaviour.
+- `npm audit --omit=dev`: zero reported production dependency vulnerabilities at verification time.
+- Local preview restarted on `0.0.0.0:3000`; authentication remains unconfigured and unavailable by design. No production deployment occurred.
+
+### Outstanding activation prerequisites
+
+1. **Approved:** The user approved the in-place compatibility strategy, including its effects on old editor clients/public photo writes, on 24 November 2026.
+2. **Blocked:** The user confirmed backups are **not verified yet**. A confirmed restorable data backup, media/settings recovery plan and drift recheck remain mandatory. No remote backup has been created or restoration tested by this work. Do not apply the migration on the strength of strategy approval alone.
+3. Approved HTTPS application origin, provider signup/email/redirect/MFA/rate-limit configuration and secure environment provisioning. No keys were retrieved or requested in chat.
+4. Verified first-owner identity/account assignment; no default owner or password will be created automatically.
+5. Transactional migration application followed by real Auth/PostgREST/Storage HTTP tests and concurrent owner-change tests in an authorised, network-enabled environment. Local PGlite/browser results do not establish these external integrations.
+
+See [docs/phase-2-security.md](docs/phase-2-security.md) for the upgrade strategy, setup, email templates, backup/rollback and activation checklist. Do not advance to a claimed live admin system or mark Phase 2 fully complete until those gates have evidence.
+
+## 18. Phase 3 local public-site delivery
+
+**Authorisation:** User requested “phase 3”. The prior compatibility approval does not waive the user-confirmed **unverified backup** gate. No Supabase connector calls, credentials retrieval, migrations, imports or remote record changes were needed/performed in this phase.
+
+### Delivered
+
+- Typed public vehicle/company models, exact rupee pricing, source configuration and an independent anonymous read-only Supabase gateway with explicit column/status projections and no staff-cookie forwarding.
+- Request-rendered inventory with database filters, exact result counts, stable sorting, 12-record pagination, shareable query URLs and working no-JavaScript GET navigation. Snapshot preview uses the same filter semantics.
+- Dynamic vehicle routes for newly added safe IDs without a page rebuild. Sold/reserved details retain appropriate unavailable states; draft/hidden/archived/absent records return 404. Active inventory, homepage selections, alternatives, counts and contact options use available rows only.
+- React specification/cards/gallery components, native modal keyboard/focus controls, safe text/media handling and missing/broken-image states. Unknown specifications and the meaning of recorded year are not guessed.
+- Shared React navigation/footer and editorial template rendering with allowlisted tokens. Dynamic values become React props/text, not interpolated database HTML. The old raw production page shell/reader were retired; generated legacy captures remain test fixtures.
+- Removed positional stock dependencies, the hard-coded total-floor count and hero in-stock claims. Archive artwork is labelled independently of current stock. The home source notice is kept visibly below the fixed navigation.
+- Distinct snapshot/live/error modes. Snapshot preview is clearly labelled and non-indexable; errors never masquerade as no stock or fall back silently to dated cars.
+- Canonicals/social metadata based on approved HTTPS origin; live-only, escaped status-aware vehicle JSON-LD; public sitemap/robots rules excluding private/admin routes and active-sitemap sold/reserved entries.
+- Mailto forms remain explicit email composers, now with a native mailto POST fallback rather than default contact-data GET URLs. No website enquiry storage or booking confirmation is claimed.
+
+### Verification performed
+
+- `npm run check`: baseline (111 legacy files) intact; type generation, TypeScript, lint and **15 unit tests** pass. Existing isolated PostgreSQL suite still passes **11 reported test results**, including its grouped parent result (nine security scenarios plus drift-abort test).
+- `npm run build`: successful production build; public routes are now dynamic/server-rendered rather than frozen pre-renders.
+- `npm run test:e2e`: **16 tests passed**, including all 22 legacy page families/routes at 320/390/768/1440 px (88 renders), no broken snapshot images/overflow/console errors, legacy redirects, no-JS navigation, menu/gallery focus and source-notice visibility.
+- Six public data-flow browser scenarios use an isolated local TLS/PostgREST-compatible fixture and dummy publishable key, not the connected Supabase project. Tests prove filtered/ranged anonymous GETs, new slugs without rebuild, sale changes on fresh requests across home/inventory/dropdowns, sold/reserved/private states, zero/one records, absent media, safe escaping, outage/no-index behaviour and sitemap selection.
+- Public gateway unit cases cover exact money, budget edges, safe media origins, low server row caps, incomplete-page rejection and source configuration failure. Fixture logs verify app requests are public-projection GETs without staff cookies or privileged credentials.
+- Gallery/lightbox interaction also passed three repeated targeted runs after ensuring native modal focus follows its visible React state.
+- `npm audit --omit=dev`: zero reported production dependency vulnerabilities at verification time.
+- Paired legacy/current viewport captures regenerated for visual review; intentional source/stock/availability changes are not represented as an enforced pixel-perfect match.
+
+### Remaining conditions
+
+This is a **local implementation completion**, not selected-project connection or production launch. Keep the main preview in `PUBLIC_INVENTORY_MODE=snapshot` until backup/security/configuration gates and actual project row/media reconciliation are verified. No current availability of the 15 legacy cars was reasserted by this work.
+
+Phase 2 remote activation is still pending. Phase 4 adds actual staff inventory/media management; Phase 5 adds durable enquiries, appointments and service workflows. See [docs/phase-3-public-site.md](docs/phase-3-public-site.md) for source modes, limits, tests and activation requirements.
+
+## 19. Phase 4 core stock-management delivery (local)
+
+**Authorisation:** User requested “phase 4”. This authorises local implementation, not bypassing the recorded **unverified-backup gate** or the approval required before changing the connected project. No Supabase connector calls, credentials retrieval, remote changes, imports or uploads occurred in this phase.
+
+### Implemented
+
+- Protected staff dashboard/counts, searchable status-filtered paginated inventory, create/edit forms, private preview and stock/audit history routes.
+- Full core lifecycle: draft, publish as available, reserve, mark sold, explicit sale reversal, archive and restore-to-draft, with role/MFA checks, expected versions, reasons and explicit UI confirmation.
+- Exact asking-price/specification validation; immutable permanent URL IDs; nullable unknown transmission; bounded escaped plain-text content. No acquisition/sale amount is inferred from asking price.
+- A second upgrade migration revokes direct browser car INSERT/UPDATE and makes inventory mutations use whitelisted row-locked RPCs. It preserves existing records/statuses/prices/legacy photo references, adds a workflow contract marker, and serialises replacement of featured selection.
+- Separately protected operational notes (draft staff / manager-authorised access) with redacted note-change audit entries, not public fields.
+- Actual image decoding/validation, orientation, bounded resizing and metadata-stripping WebP re-encoding. Private upload registry/pending states, unpredictable paths, short-lived role-authorised previews, manager-reviewed explicit public approval, ordered cover/gallery selection and confirmed unused-asset removal.
+- Phase 4 deliberately replaces Phase 2's direct draft-storage writes with a server-only media broker so browser SDK calls cannot bypass the decoder. A separate optional `MEDIA_STORAGE_SECRET_KEY` is used solely for Storage I/O/signed previews and named completion RPCs, never routine vehicle CRUD. Missing key disables photo processing, not a falsely successful upload.
+- Photo-selection and lifecycle audit entries retain actor attribution and safe metadata without original names, signed URLs, image bytes or duplicated private notes. Historical differences are allowlisted before display; existing history is not rewritten/deleted.
+- Logs filter by vehicle, actor, audit action and local date range; UTC records display in Asia/Kolkata. The UI accurately limits history to recent matching entries.
+- Pending controls and controlled form values preserve recoverable/stale input; successful changes request an explicit reload. Native Next same-origin protection is retained.
+
+### Verification
+
+- `npm run check`: type generation, TypeScript, lint, **18 unit tests** and **22 reported PostgreSQL test results** pass. The database result count includes two grouped parent results: ten new workflow scenarios, nine prior security scenarios and the policy-drift-abort scenario.
+- `npm run build`: production build succeeds with the new dynamic staff inventory/new/editor/preview/log routes.
+- `npm run test:e2e`: **19 browser tests pass**. New tests use actual Next server actions, a local TLS Auth/Storage facade and real isolated PostgreSQL RPC/RLS, not live Supabase. They cover staff draft/edit/private upload, manager photo approval/selection and the complete publish/reserve/sell/reverse/archive/restore lifecycle; a small-screen editor; private preview/note isolation; stock history; stale-input preservation; inactive/pending/AAL1 denial; nested unconfigured-route denial; and cross-origin action rejection.
+- Expected stderr from cross-origin rejection and a deliberately stale database edit is negative-test evidence, not an unexpected suite failure.
+- Image tests exercise real decoded bytes and EXIF removal, reject HTML/SVG/unsupported or oversized inputs, and bound image dimensions/output. Database tests cover exact prices, duplicate IDs, raw mutation/media-write denial, fake upload completion, per-uploader reservation limit, deactivation, private notes, feature replacement and audit rollback.
+- Previous public regressions retain all 22 routes/four viewport checks (88 renders), menu/gallery behaviour, safe public stock queries, sold handling and sitemap/schema tests. The original **111 legacy baseline files remain unchanged**.
+- `npm audit --omit=dev`: zero reported production dependency vulnerabilities at verification time. `git diff --check` passes.
+
+### Explicitly not activated / remaining work
+
+- The selected project remains unchanged. No real invited staff acceptance, real Auth signature/provider verification, Storage-byte/cleanup integration, multi-session concurrency stress, backup restoration or production deployment was performed.
+- The new workflow/storage-grant compatibility changes require review together with Phase 2 before remote activation. The user-approved earlier compatibility strategy is not treated as approval to skip backup verification or these new effects.
+- Pending/orphaned Storage bytes need the documented trusted reconciliation/retention procedure. There is no automatic purge or unreviewed retry of ambiguous publication.
+- Full CSV exports, customised public photo alt-text editing, detailed upload percentage telemetry and automated cleanup remain documented follow-up hardening work; no UI pretends these exist. Current image alternatives derive from vehicle identity/view number and upload progress is a processing/pending state.
+- Public forms remain mailto-based; durable leads, appointments, services and related business metrics are Phase 5. The current dashboard does not invent those totals or sales revenue.
+
+See [docs/phase-4-stock-management.md](docs/phase-4-stock-management.md) for the workflow, role boundaries, migration compatibility, secret isolation, test limitations and reconciliation/activation runbook. **Core Phase 4 is locally implemented, not remotely operational or fully accepted for launch.**
+
+
+## 20. Phase 5 core business-workflow delivery (local)
+
+**Authorisation:** User requested “phase 5”. This authorises local implementation/testing only, not bypassing the recorded unverified-backup gate. No Supabase connector calls, credential retrieval, remote writes, invitations, imports or uploads occurred.
+
+### Delivered
+
+- Optional persistent general/car/viewing/sell/exchange/finance/insurance/service intake, replacing compose-email forms only when configured; customer-owned service vehicles are separate from sale stock. Seller context stays private and never auto-creates inventory.
+- Explicit contact consent/version, bounded validation, signed expiring form envelopes, honeypot, keyed contact/global and optional verified-network rate limits; server-only isolated intake broker with no anonymous private-table INSERT/SELECT.
+- Transactional stored references, idempotent unchanged retries, atomic initial service-job creation, fail-closed/ambiguous-error messaging and no invented notification or appointment confirmation.
+- Assigned-only staff queue/detail/notes/follow-ups and manager assignment, permission-scoped actual dashboard counts; no revenue estimate.
+- Versioned staff viewing confirmations and service lifecycle/scheduling, available-car/active-staff checks, cross-workflow staff/vehicle conflict rejection, explicit Kolkata dates, guarded scheduling writes, audit redaction/rollback and ten-minute elevated TOTP checks.
+- Manager/owner service catalogue publication/deactivation and allowlisted versioned public business settings. Direct authenticated brand-settings UPDATE is revoked by the new reviewed migration. History is retained; there is no destructive customer/appointment delete UI.
+- Dynamic public Services route/navigation, revised intake/privacy notices and honest snapshot/email fallbacks. No full workshop ERP, parts/payments, reminders, automatic notification integration or public customer-record lookup.
+
+### Verification
+
+Full `npm run check && npm run build && npm run test:e2e && npm audit --omit=dev && git diff --check` passed: **21 unit tests, 32 reported PostgreSQL results (including grouped parent results), 23 browser tests**, zero reported production vulnerabilities and **111 protected legacy files unchanged**. Phase 5 adds nine isolated database scenarios and four browser tests covering stored intake/assignment/notes, honeypot/input retention/CSRF/private-read rejection, customer-owned service scheduling/catalogue/settings, and explicit viewing confirmation/conflict rejection. Earlier public/inventory/media/security regressions still pass. Fixture transport corrections (set-returning RPC arrays) and awaited test navigation were verified in the passing run.
+
+### Not remotely operational / remaining gates
+
+The local synthetic Auth/PostgREST/Storage + PGlite fixture is not real JWT/provider/native multi-session concurrency or hosted durability evidence. Remote activation still requires verified recovery readiness, fresh drift review/approval of all three migrations, real-project rehearsal, native scheduling/idempotency race and timeout testing, actual invited staff acceptance, approved public details/services/privacy/retention, deployment secret isolation and trusted ingress/edge abuse controls. No automated retention purge, customer uploads/exports/self-service lookup, consolidated availability calendar, shift/business-hour enforcement or notifications are claimed as complete. See [docs/phase-5-business-workflows.md](docs/phase-5-business-workflows.md) for the workflow, limits, security boundaries, configuration, failure reconciliation and activation runbook.
+
+
+## 21. Phase 6 hardening and launch-readiness delivery (local)
+
+**Authorisation:** User requested “phase 6”. This authorises local hardening and preparation; it does not waive the recorded unverified-backup gate or authorise remote reset/migrations/imports/uploads/DNS/deployment. No connector calls or credential retrieval occurred.
+
+### Delivered
+
+- Axe-core automated WCAG 2/2.1 A/AA-tagged scans without rule exclusions across public page families/mobile dialog, configured intake and representative staff screens; 320px long-text enquiry success/private-record reflow checks and scoped wrapping fixes.
+- Baseline nosniff/referrer/device-permission/base/object CSP headers with no preview-breaking framing restriction; browser tests for private no-store/noindex/no-referrer and public HTML/script synthetic-credential isolation. Full script/framing CSP, edge controls and domain-specific HSTS remain explicit deployment gates.
+- Stricter Auth origin parsing rejects embedded credentials/path/query/fragment rather than discarding them.
+- Offline public-projection inventory comparator: IDs/count/duplicates/exact prices/null/spec/order/media references; metadata-only differences, source/input hashes and 45 local image hashes. Availability stays unverified and invalid input replaces any old success report. This is not an importer or real provider reconciliation.
+- Deterministic candidate source digest (including legacy inputs/assets), nine-gate reviewed evidence/artifact-hash checker, consistent selected-project/runtime/secret/TLS validation and explicit BLOCKED outcome. It does not authenticate reviewers, certify artifacts, deploy or grant approval.
+- CI adds legacy dry-run, production dependency audit and manifest artifact. Recovery/cutover/incident runbook, pending real staff acceptance sheet and pending evidence template are delivered.
+
+### Phase 6 launch exit condition — NOT met
+
+Verified backup restoration/data-media-config reconciliation, measured approved RPO/RTO, real Supabase/Auth/Storage/RLS testing, native independent-session scheduling/idempotency races and hosted durability, real invited staff acceptance/manual accessibility and device testing, approved privacy/retention/business details/deferred features, actual monitoring/alert/recovery rehearsal and explicit cutover approval remain pending. No production deployment, remote media/data import or claim of current legacy availability has occurred. Owner-authorised CSV exports and other documented followups remain a launch-scope approval/implementation decision, not silently completed features.
+
+See [Phase 6 scope/tooling/gates](docs/phase-6-launch-readiness.md), [operations and recovery](docs/operations-runbook.md), and [real staff acceptance (pending)](docs/staff-acceptance.md).
+
+
+### Phase 6 recorded final local verification
+
+Full `npm run check && npm run inventory:dry-run && npm run build && npm run test:e2e && npm audit --omit=dev && git diff --check` passed. **24 unit tests, 34 reported integration results (32 PostgreSQL/grouped results plus two offline CLI scenarios), 27 browser tests** passed. Axe reported no A/AA-tagged violations in tested states, without disabled rules. The suite preserves 88 public route/viewport renders and all prior inventory/media/business security workflows. Build/typecheck/lint pass; the 111-file legacy baseline is unchanged; production dependency audit reports zero vulnerabilities. Dry run validates 15 legacy cars with 10 unknown transmissions and no remote writes. Expected negative-test diagnostics include evil-Origin, stale-version, forbidden private-read and conflicting-schedule rejections. The final pending-evidence checker returns exit 1 / BLOCKED with nine pending gates; manifest generation is not launch approval.
